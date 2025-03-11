@@ -1,0 +1,64 @@
+
+
+/* Add left margin for the container */
+.cart-container {
+  margin-left: 50px;
+}
+
+/* Cart Item Card Styling */
+.cart-item-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  margin-right: 10px;
+}
+
+/* Card Body Layout */
+.cart-item-card .text-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+}
+
+/* Add margin to buttons inside the card */
+.btn-remove-item {
+  margin-top: 20px;
+  width: 100%; 
+  max-width: 200px; 
+  align-self: center;
+}
+
+/* Ensuring the button stays centered vertically in the card */
+.cart-item-card .text-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  align-items: center;
+}
+
+/* Additional styling for the alert if the cart is empty */
+.alert-info {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Add more margin on the left for the first card */
+.cart-item-card:first-child {
+  margin-left: 30px;
+}
+
+/* Finalize Order Button Styling */
+.btn-finalize-order {
+  width: 100%;
+  max-width: 250px;
+  font-size: 18px;
+  padding: 12px;
+  border-radius: 50px;
+}

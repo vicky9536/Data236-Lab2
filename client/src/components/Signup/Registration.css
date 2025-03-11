@@ -1,0 +1,27 @@
+.signup-container {
+    min-height: 100vh;
+    background-color: #e0e4e8;
+}
+
+.center-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+}
+  
+
+.form-group {
+    margin-bottom: 1.5rem;
+}

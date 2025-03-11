@@ -1,0 +1,79 @@
+.restaurant-image {
+    max-width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .dish-card {
+    border: 1px solid #e1e1e1;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+    min-height: 350px; /* Ensures consistent height for all cards */
+  }
+  
+  .dish-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .dish-image {
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #e1e1e1;
+  }
+  
+  /* Card Body */
+  .dish-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .dish-card .card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .dish-card .card-text {
+    font-size: 1rem;
+    color: #555;
+    flex-grow: 1; /* Ensures description takes available space */
+    white-space: nowrap;  /* Prevents the text from wrapping to the next line */
+    overflow: hidden;     /* Hides any text that overflows the container */
+    text-overflow: ellipsis; /* Adds '...' at the end if the text is too long */
+  }
+  
+  /* Add to Cart Button */
+  .add-to-cart-btn {
+    margin-top: auto;
+    width: 100%;
+    background-color: #ff5a5f;
+    border-color: #ff5a5f;
+  }
+  
+  .add-to-cart-btn:hover {
+    background-color: #ff383d;
+    border-color: #ff383d;
+  }
+  
+  /* Restaurant Details */
+  .restaurant-name {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .restaurant-description,
+  .restaurant-location,
+  .restaurant-timings {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .text-danger {
+    color: red;
+  }

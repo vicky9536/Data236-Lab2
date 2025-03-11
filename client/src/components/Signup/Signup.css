@@ -1,0 +1,52 @@
+.home-container {
+  min-height: 100vh;
+  background-color: #e0e4e8;
+}
+
+.btn-green {
+  background-color: #00c853;
+  color: white;
+  border: none;
+}
+  
+.btn-green:hover {
+  background-color: #009624;
+}
+  
+  .btn-black {
+    background-color: #000;
+    color: white;
+    border: none;
+  }
+  
+  .btn-black:hover {
+    background-color: #444;
+  }
+  
+  .btn-lg {
+    font-size: 24px; 
+    padding: 40px 50px; 
+    width: 200px;
+    height: 200px;
+  }
+  
+  .mt-4 .btn:first-child {
+    margin-right: 40px;
+  }
+  
+  .mt-4 .btn:last-child {
+    margin-left: 40px;
+  }
+  
+  .btn-square {
+    border-radius: 10px;
+  }
+  
+  .container {
+    margin-top: 100px;
+  }
+  
+  h2 {
+    color: #000;
+    font-weight: bold;
+  }
