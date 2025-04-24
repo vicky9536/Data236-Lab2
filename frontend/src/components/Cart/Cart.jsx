@@ -74,7 +74,7 @@ const Cart = () => {
         <Row className="mt-4">
           {cartList?.cartItems?.length === 0 ? (
             <Col className="text-center">
-              <div className="empty-cart-message" style={{ backgroundColor: 'lightblue', padding: '10px', borderRadius: '5px' }}>
+              <div className="empty-message">
                 <p>Your cart is empty.</p>
               </div>
             </Col>

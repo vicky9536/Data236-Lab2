@@ -13,6 +13,39 @@ const verifyToken = (req) => {
     return jwt.verify(token, process.env.JWT_SECRET);
 };
 
+// get all orders for a customer
+exports.getAllCustomerOrders = async (req, res) => {
+    const user = verifyToken(req);
+    if (!user.customerId) {
+        return res.status(403).json({ error: "Forbidden: only customers can view orders" });
+    }    
+
+    try {
+        const customerId = user.customerId;
+        const orders = await Order.find({ customerId }).populate('restaurantId');
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error("Error fetching orders:", error);
+        res.status(500).json({error: error.message});
+    }
+};
+
+// get all orders for a restaurant
+exports.getAllRestaurantOrders = async (req, res) => {
+    const user = verifyToken(req);
+    if (!user.restaurantId) {
+        return res.status(403).json({ error: "Forbidden: only restaurants can view orders" });
+    }
+    try {
+        const restaurantId = user.restaurantId;
+        const orders = await Order.find({ restaurantId }).populate('customerId');
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error("Error fetching orders:", error);
+        res.status(500).json({error: error.message});
+    }
+};
+
 // create a new order
 exports.createOrder = async (req, res) => {
     // if (!req.session.consumerId) {

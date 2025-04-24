@@ -19,7 +19,8 @@ import RestaurantDashboard from './components/Home/RestaurantDashboard';
 import UpdateRestaurant from './components/Home/UpdateRestaurant';
 import EditDish from './components/Menu/EditDish';
 import AddDish from './components/Menu/AddDish';
-import Order from './components/Order/OrderOnRestaurant';
+import OrderOnCustomer from './components/Order/OrderOnCustomer';
+import OrderOnRestaurant from './components/Order/OrderOnRestaurant';
 import UpdateOrder from './components/Order/UpdateOrder';
 import ViewCusProfile from './components/Order/ViewCusProfile';
 
@@ -38,13 +39,14 @@ const App = () => {
         <Route path="/customer_dashboard/profile/update" element={<UpdateProfile />} />
         <Route path="/customer_dashboard/favorites" element={<Favorites />} />
         <Route path="/customer_dashboard/cart" element={<Cart />} />
+        <Route path="/customer_dashboard/orders" element={<OrderOnCustomer />} />
         <Route path="/restaurant_login" element={<RestaurantLogin />} />
         <Route path="/restaurant_register" element={<RestaurantSignup />} />
         <Route path="/restaurant_dashboard" element={<RestaurantDashboard />} />
         <Route path="/restaurant/profile/update" element={<UpdateRestaurant />} />
         <Route path="/restaurant/edit_dish/:dish_name" element={<EditDish />} />
         <Route path="/restaurant/add_dish/:dish_name" element={<AddDish />} />
-        <Route path="/restaurant/order" element={<Order />} />
+        <Route path="/restaurant/order" element={<OrderOnRestaurant />} />
         <Route path="/restaurant/order/edit_order/:order_Id" element={<UpdateOrder />} />
         <Route path="/restaurant/order/view_cus_profile/:order_Id" element={<ViewCusProfile />} />
         <Route path="/logout" element={<Logout />} />

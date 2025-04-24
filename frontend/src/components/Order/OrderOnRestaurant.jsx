@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Row, Col, Card, Button, Alert, Dropdown } from 'react-bootstrap';
-import { getOrder } from '../../redux/actions/orderActions';
+import { getAllRestaurantOrders } from '../../redux/actions/orderActions';
 import { useNavigate } from 'react-router-dom';
 import "./Order.css";
 
@@ -15,7 +15,7 @@ const Order = () => {
 
   useEffect(() => {
     if (restaurant_Id) {
-      dispatch(getOrder(restaurant_Id)); 
+      dispatch(getAllRestaurantOrders(restaurant_Id)); 
     }
   }, [dispatch, restaurant_Id]);
 
