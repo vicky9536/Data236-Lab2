@@ -3,6 +3,7 @@ const { Customer } = require('../models');
 const { Dish } = require('../models');
 const { Order } = require('../models');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const verifyToken = (req) => {
     const authHeader = req.headers.authorization;
@@ -18,10 +19,6 @@ const verifyToken = (req) => {
 
 // review cart
 exports.getCart = async (req, res) => {
-    // if (!req.session.consumerId) {
-    //     return res.status(401).json({error: "Unauthorized"});
-    // }
-
     try {
         const user = verifyToken(req);
         const customerId = user.customerId;
@@ -41,19 +38,16 @@ exports.getCart = async (req, res) => {
 
 // add dish to cart
 exports.addCart = async (req, res) => {
-    // if (!req.session.consumerId) {
-    //     return res.status(401).json({error: "Unauthorized"});
-    // }
-
     try {
         const { dishId, quantity, restaurantId } = req.body;
         const user = verifyToken(req);
         const customerId = user.customerId;
+
         const cartItem = await Cart.create({
-            dishId,
+            dishId: new mongoose.Types.ObjectId(dishId),
             quantity,
-            restaurantId,
-            customerId
+            restaurantId: new mongoose.Types.ObjectId(restaurantId),
+            customerId: new mongoose.Types.ObjectId(customerId)
         });
         res.status(201).json(cartItem);
     } catch (error) {

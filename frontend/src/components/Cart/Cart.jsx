@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Container, Row, Col, Card, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Alert } from 'react-bootstrap';
 import { getCart, deleteCart, checkout } from '../../redux/actions/cartActions';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../Layout/Layout';
@@ -10,8 +10,6 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const customer = useSelector((state) => state.customerLogin.customer);
-  const customer_Id = customer.id;
   const [refresh, setRefresh] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
   const [orderSuccess, setOrderSuccess] = useState(null);
@@ -19,16 +17,14 @@ const Cart = () => {
   const cartList = useSelector((state) => state.cartList);
 
   useEffect(() => {
-    if (customer_Id) {
-      dispatch(getCart(customer_Id)); // Fetch cart items when the page loads
-    }
-  }, [dispatch, customer_Id, refresh]);
+    dispatch(getCart());
+  }, [dispatch, refresh]);
 
   useEffect(() => {
     if (cartList && cartList.cartItems) {
       let totalPrice = 0;
       cartList.cartItems.forEach(item => {
-        const price = parseFloat(item.Dish.price); // Ensure price is a number
+        const price = parseFloat(item.Dish.price);
         const quantity = item.quantity;
         totalPrice += price * quantity;
       });
@@ -36,41 +32,24 @@ const Cart = () => {
     }
   }, [cartList]);
 
-  const handleFinalizeOrder = async (e) => {
-    try{
-      await dispatch(checkout(customer_Id)); // Checkout the cart
+  const handleFinalizeOrder = async () => {
+    try {
+      await dispatch(checkout());
       setOrderSuccess(true);
       navigate('/customer_dashboard');
     } catch (error) {
       console.error("Error checking out:", error);
+      setOrderSuccess(false);
     }
   };
 
-  const handleRemoveItem = async(customer_Id, cartId) => {
-    try{
-      await dispatch(deleteCart(customer_Id, cartId)); // Remove item from cart
-      setRefresh(!refresh);
+  const handleRemoveItem = async (cartId) => {
+    try {
+      await dispatch(deleteCart(cartId));
+      setRefresh(!refresh); // Trigger refresh to reload cart
     } catch (error) {
       console.error("Error removing item from cart:", error);
     }
-  };
-
-  const handleFavoritesClick = async (e) => {
-    navigate(`/customer/${customer_Id}/favorites`);
-  };
-
-  const handleDashboardClick = async (e) => {
-    navigate('/customer_dashboard');
-  };
-
-  const handleProfileClick = async (e) => {
-    e.preventDefault();
-    navigate(`/customer/${customer_Id}`);
-  };
-
-  const handleLogoutClick = async (e) => {
-    e.preventDefault();
-    navigate("/");
   };
 
   return (
@@ -79,15 +58,19 @@ const Cart = () => {
         <Container className="mt-5 cart-container">
           <Row className="text-center">
             <Col>
-              <h2>{customer.name}'s Cart</h2>
+              <h2>Your Cart</h2>
             </Col>
           </Row>
         </Container>
+
         {orderSuccess !== null && (
-            <Alert variant={orderSuccess ? 'success' : 'danger'} className="mt-4">
-              {orderSuccess ? 'Your order has been placed successfully!' : 'There was an issue placing your order. Please try again.'}
-            </Alert>
-          )}
+          <Alert variant={orderSuccess ? 'success' : 'danger'} className="mt-4">
+            {orderSuccess
+              ? 'Your order has been placed successfully!'
+              : 'There was an issue placing your order. Please try again.'}
+          </Alert>
+        )}
+
         {/* Cart Items */}
         <Row className="mt-4">
           {cartList == null || cartList.cartItems.length === 0 ? (
@@ -103,8 +86,8 @@ const Cart = () => {
                     <Card.Text>Price: ${item.Dish.price}</Card.Text>
                     <Card.Text>Quantity: {item.quantity}</Card.Text>
                     <Button
-                      variant="danger" style={{ marginLeft: '-5px' }}
-                      onClick={() => handleRemoveItem(customer_Id, item.id)}
+                      variant="danger"
+                      onClick={() => handleRemoveItem(item.id)}
                       className="btn-remove-item"
                     >
                       Delete
@@ -127,17 +110,18 @@ const Cart = () => {
 
         {/* Finalize Order Button */}
         {cartList && cartList.cartItems && cartList.cartItems.length > 0 && (
-        <Row className="mt-4">
-          <Col className="text-center">
-            <Button
-              variant="success"
-              onClick={handleFinalizeOrder}
-              className="btn-finalize-order">
+          <Row className="mt-4">
+            <Col className="text-center">
+              <Button
+                variant="success"
+                onClick={handleFinalizeOrder}
+                className="btn-finalize-order"
+              >
                 Order
-            </Button>
-          </Col>
-        </Row>
-      )}
+              </Button>
+            </Col>
+          </Row>
+        )}
       </div>
     </Layout>
   );

@@ -17,7 +17,8 @@ const RestaurantPage = () => {
 
   const restaurant = restaurants?.find((r) => r.name === restaurant_name);
   const dishes = dishesByRestaurant?.[restaurant?.id] || [];
-
+  
+  const [toastVariant, setToastVariant] = useState('danger');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
@@ -26,6 +27,25 @@ const RestaurantPage = () => {
       dispatch(fetchRestDishes(restaurant.id));
     }
   }, [restaurant, dispatch]);
+
+  const favoriteError = useSelector((state) => state.favoriteAdd.error);
+  const cartError = useSelector((state) => state.cartAdd.error);
+
+  useEffect(() => {
+    if (favoriteError) {
+      setToastMessage(`Failed to add to favorites: ${favoriteError}`);
+      setToastVariant('danger');
+      setShowToast(true);
+    }
+  }, [favoriteError]);
+
+  useEffect(() => {
+    if (cartError) {
+      setToastMessage(`Failed to add to cart: ${cartError}`);
+      setToastVariant('danger');
+      setShowToast(true);
+    }
+  }, [cartError]);
 
   if (!restaurant) {
     return <Layout variant="dashboard" isLoggedInDashboard={true}><div>Restaurant not found!</div></Layout>;
@@ -44,19 +64,30 @@ const RestaurantPage = () => {
     const restInput = { restaurantId: restaurant.id };
     dispatch(addFavorite(restInput));
     setToastMessage(`Restaurant "${restaurant.name}" added to favorites!`);
+    setToastVariant('success');
     setShowToast(true);
   };
-
+  
   const handleAddToCart = (dish_Id) => {
     const cartInput = {
       dish_Id,
       quantity: 1,
-      restaurant_Id: restaurant.id,
+      restaurantId: restaurant.id,
     };
     dispatch(addToCart(cartInput));
     const dish = dishes.find(d => d.id === dish_Id);
-    setToastMessage(`"${dish?.name}" added to cart!`);
+    setToastMessage(`Successfully added to cart!`);
+    setToastVariant('success');
     setShowToast(true);
+  };
+
+  // Inline style for ToastContainer to center it on the page
+  const toastContainerStyle = {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    zIndex: 1050,
   };
 
   return (
@@ -104,8 +135,8 @@ const RestaurantPage = () => {
                           <Card.Text>
                             <strong>Price:</strong> ${dish.price}
                           </Card.Text>
-                          <Button onClick={() => handleAddToCart(dish.id)} variant="primary" className="add-to-cart-btn"
-                            style ={{marginLeft: "0px"}}>
+                          <Button onClick={() => handleAddToCart(dish._id)} variant="primary" className="add-to-cart-btn"
+                            style={{ marginLeft: '0px'}}>
                             Add to Cart
                           </Button>
                         </Card.Body>
@@ -120,10 +151,10 @@ const RestaurantPage = () => {
           </Row>
         </Container>
 
-        <ToastContainer className="p-3 center-toast">
-          <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
+        <ToastContainer style={toastContainerStyle}>
+          <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide bg={toastVariant}>
             <Toast.Header>
-              <strong className="me-auto">Success</strong>
+              <strong className="me-auto">{toastVariant === 'success' ? 'Success' : 'Error'}</strong>
             </Toast.Header>
             <Toast.Body>{toastMessage}</Toast.Body>
           </Toast>
