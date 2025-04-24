@@ -26,7 +26,6 @@ exports.getFavorites = async (req, res) => {
             .populate('restaurantId')  
             .exec();
 
-        console.log("Favorites with populated restaurant data:", favorites);
         res.json(favorites);
     } catch (error) {
         console.error("Error fetching favorites:", error);

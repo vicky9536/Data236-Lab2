@@ -44,7 +44,6 @@ export const addFavorite = (restInput) => async (dispatch) => {
 export const removeFavorite = (favorite_Id) => async (dispatch) => {
     try {
         dispatch({ type: FAVORITE_REMOVE_REQUEST });
-        console.log("favorite_id datatype" , typeof favorite_Id);
         const { data } = await axios.delete(`http://127.0.0.1:8383/favorites/removeFavorite/${favorite_Id}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });

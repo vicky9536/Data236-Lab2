@@ -27,7 +27,7 @@ const initialStateDishes = { loading: false, dishesByRestaurant: {}, error: null
         return { ...state, loading: false,
           dishesByRestaurant: {
             ...state.dishesByRestaurant,
-            [action.payload.restaurant_Id]: action.payload.Dishes,
+            [action.payload.restaurantId]: action.payload.dishes,
           },
           error: null,
         };

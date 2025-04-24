@@ -104,7 +104,8 @@ const RestaurantPage = () => {
                           <Card.Text>
                             <strong>Price:</strong> ${dish.price}
                           </Card.Text>
-                          <Button onClick={() => handleAddToCart(dish.id)} variant="primary" className="add-to-cart-btn">
+                          <Button onClick={() => handleAddToCart(dish.id)} variant="primary" className="add-to-cart-btn"
+                            style ={{marginLeft: "0px"}}>
                             Add to Cart
                           </Button>
                         </Card.Body>
@@ -119,7 +120,7 @@ const RestaurantPage = () => {
           </Row>
         </Container>
 
-        <ToastContainer position="bottom-end" className="p-3">
+        <ToastContainer className="p-3 center-toast">
           <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
             <Toast.Header>
               <strong className="me-auto">Success</strong>

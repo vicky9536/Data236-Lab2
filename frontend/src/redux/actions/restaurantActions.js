@@ -19,8 +19,7 @@ export const fetchRestDishes = (restaurantId) => async (dispatch) => {
     try {
         dispatch({ type: REST_DISHES_LIST_REQUEST });
         const { data } = await axios.get(`http://127.0.0.1:8383/resDb/restaurants/${restaurantId}/dishes`);
-        console.log("restaurantId:", restaurantId);
-        console.log("dish data:", data);  
+        console.log("dish data:", data.dishes);  
         dispatch({
             type: REST_DISHES_LIST_SUCCESS,
             payload: { 
