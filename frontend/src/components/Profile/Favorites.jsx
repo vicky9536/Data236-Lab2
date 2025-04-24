@@ -18,9 +18,9 @@ const FavoriteRestaurantsPage = () => {
     dispatch(getFavorites());
   }, [dispatch, refresh]);
 
-  const handleCardClick = async (restaurant_Id, e) => {
+  const handleCardClick = async (restaurantName, e) => {
     if (!e.target.closest('.remove-btn')) { 
-      navigate(`/restaurant/${restaurant_Id}`);
+      navigate(`/restaurant/${restaurantName}`);
     }
   };
 
