@@ -61,9 +61,10 @@ exports.deleteCart = async (req, res) => {
 
     try {
         const user = verifyToken(req);
-        const customerId = user.customerId;    
+        const customerId = user.customerId;
+
         const deleted = await Cart.findOneAndDelete({
-            _id: req.params.id,
+            _id: new mongoose.Types.ObjectId(req.params.id),
             customerId
         });        
         if (deleted) {
@@ -87,7 +88,7 @@ exports.checkout = async (req, res) => {
         const user = verifyToken(req);
         const customerId = user.customerId;
         const cartItems = await Cart.find({ customerId }).populate('dishId');        
-        console.log("Cart Items:", cartItems);
+        console.log("Cart Items - backend:", cartItems);
 
         if (cartItems.length === 0) {
             return res.status(400).json({ error: "Cart is empty" });
@@ -103,7 +104,7 @@ exports.checkout = async (req, res) => {
 
         const order = await Order.create({
             customerId,
-            restaurant_id: cartItems[0].restaurantId,
+            restaurantId: cartItems[0].restaurantId,
             price: totalPrice,
             status: 'New',
             items: orderItems

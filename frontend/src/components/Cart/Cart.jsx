@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Container, Row, Col, Card, Button, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Toast, ToastContainer } from 'react-bootstrap';
 import { getCart, deleteCart, checkout } from '../../redux/actions/cartActions';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../Layout/Layout';
@@ -12,7 +12,9 @@ const Cart = () => {
 
   const [refresh, setRefresh] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [orderSuccess, setOrderSuccess] = useState(null);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastVariant, setToastVariant] = useState('success');
+  const [showToast, setShowToast] = useState(false);
 
   const cartList = useSelector((state) => state.cartList);
 
@@ -22,31 +24,36 @@ const Cart = () => {
 
   useEffect(() => {
     if (cartList && cartList.cartItems) {
-      let totalPrice = 0;
+      let total = 0;
       cartList.cartItems.forEach(item => {
-        const price = parseFloat(item.Dish.price);
+        const price = parseFloat(item.dishId.price);
         const quantity = item.quantity;
-        totalPrice += price * quantity;
+        total += price * quantity;
       });
-      setTotalPrice(totalPrice);
+      setTotalPrice(total);
     }
   }, [cartList]);
 
   const handleFinalizeOrder = async () => {
     try {
       await dispatch(checkout());
-      setOrderSuccess(true);
-      navigate('/customer_dashboard');
+      await dispatch(getCart()); // Ensure the cart is reloaded after checkout
+      setToastMessage('Your order has been placed successfully!');
+      setToastVariant('success');
+      setShowToast(true);
+      setRefresh(!refresh); // Trigger refresh for safety
     } catch (error) {
       console.error("Error checking out:", error);
-      setOrderSuccess(false);
+      setToastMessage('There was an issue placing your order. Please try again.');
+      setToastVariant('danger');
+      setShowToast(true);
     }
   };
 
   const handleRemoveItem = async (cartId) => {
     try {
       await dispatch(deleteCart(cartId));
-      setRefresh(!refresh); // Trigger refresh to reload cart
+      setRefresh(!refresh);
     } catch (error) {
       console.error("Error removing item from cart:", error);
     }
@@ -63,32 +70,27 @@ const Cart = () => {
           </Row>
         </Container>
 
-        {orderSuccess !== null && (
-          <Alert variant={orderSuccess ? 'success' : 'danger'} className="mt-4">
-            {orderSuccess
-              ? 'Your order has been placed successfully!'
-              : 'There was an issue placing your order. Please try again.'}
-          </Alert>
-        )}
-
-        {/* Cart Items */}
+        {/* Cart Items or Empty Message */}
         <Row className="mt-4">
-          {cartList == null || cartList.cartItems.length === 0 ? (
-            <Col>
-              <Alert variant="info">Your cart is empty.</Alert>
+          {cartList?.cartItems?.length === 0 ? (
+            <Col className="text-center">
+              <div className="empty-cart-message" style={{ backgroundColor: 'lightblue', padding: '10px', borderRadius: '5px' }}>
+                <p>Your cart is empty.</p>
+              </div>
             </Col>
           ) : (
-            cartList.cartItems.map((item) => (
+            cartList?.cartItems?.map((item) => (
               <Col key={item.id} md={4} className="mb-4">
                 <Card className="cart-item-card">
                   <Card.Body className="text-center">
-                    <Card.Title>{item.Dish.name}</Card.Title>
-                    <Card.Text>Price: ${item.Dish.price}</Card.Text>
+                    <Card.Title>{item.dishId.name}</Card.Title>
+                    <Card.Text>Price: ${item.dishId.price}</Card.Text>
                     <Card.Text>Quantity: {item.quantity}</Card.Text>
                     <Button
                       variant="danger"
-                      onClick={() => handleRemoveItem(item.id)}
+                      onClick={() => handleRemoveItem(item._id)}
                       className="btn-remove-item"
+                      style={{ marginLeft: '5px' }}
                     >
                       Delete
                     </Button>
@@ -100,7 +102,7 @@ const Cart = () => {
         </Row>
 
         {/* Total Price */}
-        {cartList && cartList.cartItems && cartList.cartItems.length > 0 && (
+        {cartList?.cartItems?.length > 0 && (
           <Row className="mt-4">
             <Col className="text-center">
               <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
@@ -109,7 +111,7 @@ const Cart = () => {
         )}
 
         {/* Finalize Order Button */}
-        {cartList && cartList.cartItems && cartList.cartItems.length > 0 && (
+        {cartList?.cartItems?.length > 0 && (
           <Row className="mt-4">
             <Col className="text-center">
               <Button
@@ -117,12 +119,22 @@ const Cart = () => {
                 onClick={handleFinalizeOrder}
                 className="btn-finalize-order"
               >
-                Order
+                Place Order
               </Button>
             </Col>
           </Row>
         )}
       </div>
+
+      {/* Toast Container for success/error messages */}
+      <ToastContainer style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1050 }}>
+        <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide bg={toastVariant}>
+          <Toast.Header>
+            <strong className="me-auto">{toastVariant === 'success' ? 'Success' : 'Error'}</strong>
+          </Toast.Header>
+          <Toast.Body>{toastMessage}</Toast.Body>
+        </Toast>
+      </ToastContainer>
     </Layout>
   );
 };

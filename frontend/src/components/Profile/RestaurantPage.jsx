@@ -68,14 +68,14 @@ const RestaurantPage = () => {
     setShowToast(true);
   };
   
-  const handleAddToCart = (dish_Id) => {
+  const handleAddToCart = (dishId) => {
     const cartInput = {
-      dish_Id,
+      dishId: dishId,
       quantity: 1,
       restaurantId: restaurant.id,
     };
     dispatch(addToCart(cartInput));
-    const dish = dishes.find(d => d.id === dish_Id);
+    const dish = dishes.find(d => d.id === dishId);
     setToastMessage(`Successfully added to cart!`);
     setToastVariant('success');
     setShowToast(true);
