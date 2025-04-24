@@ -6,11 +6,11 @@ import { FAVORITE_REMOVE_REQUEST, FAVORITE_REMOVE_SUCCESS, FAVORITE_REMOVE_FAIL 
 export const getFavorites = (customer_Id) => async (dispatch) => {
     try {
         dispatch({ type: FAVORITE_LIST_REQUEST });
-        const { data: favoriteData } = await axios.get(`http://127.0.0.1:8383/favorites/getFavorites/${customer_Id}`);
+        const { data: favoriteData } = await axios.get(`http://127.0.0.1:8383/favorites/getFavorites`);
         console.log("Favorites:", favoriteData);
         const favoritesWithDetails = await Promise.all(
             favoriteData.map(async (favorite) => {
-              const { data: restaurantData } = await axios.get(`http://127.0.0.1:8383/resDb/restaurants/${favorite.restaurant_Id}/dishes`);
+              const { data: restaurantData } = await axios.get(`http://127.0.0.1:8383/resDb/restaurants/dishes`);
               console.log("Restaurant:", restaurantData);
               return { ...favorite, restaurant: restaurantData };
             })

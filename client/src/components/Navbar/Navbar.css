@@ -1,0 +1,40 @@
+/* Home Container */
+.home-container {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  margin: 0;  /* Remove margins */
+  padding-top: 60px; /* To avoid content under the navbar */
+}
+
+/* Welcome Section */
+.welcome-section {
+  background: url('/src/images/homepage_background.png') no-repeat center center;
+  background-size: cover;
+  height: calc(100vh - 60px); /* Adjust height to fill the remaining space */
+  color: white;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.text-black {
+  color: black;
+}
+
+.display-3 {
+  font-size: 3rem;
+}
+
+.btn {
+  font-size: 1.25rem;
+  padding: 10px 20px;
+  margin: 0 10px;
+}

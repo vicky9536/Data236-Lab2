@@ -1,64 +1,46 @@
+/* Home Container */
 .home-container {
-  min-height: 100vh;
-  background-color: #f8f9fa;
-}
-
-/* Navbar Styling */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: white; 
-}
-
-.navbar .btn {
-  font-size: 16px;
-  font-weight: 500;
-  padding: 12px 25px;
-}
-
-.navbar .btn-outline-light {
-  border-radius: 30px;
-  border-color: white;
-}
-
-.navbar .btn-light {
-  border-radius: 30px;
-  background-color: #f8f9fa;
-  color: #000;
-}
-.custom-button-spacing {
-  margin-left: 10px;
-}
-
-.custom-btn {
-  padding: 4px 8px; 
-  width: auto;
-}
-
-
-.welcome-section {
-  background-image: url('/src/images/homepage_background.png');
-  background-size: cover;
-  background-position: center;
-  height: 100vh;
   position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: block;
 }
 
-.welcome-section .display-3 {
-  margin-left: 50px;
-  font-size: 3rem; 
-  font-weight: 700;
+/* Welcome Section */
+.welcome-section {
+  position: relative;
+  background: url('/src/images/homepage_background.png') no-repeat center center;
+  background-size: cover;
+  height: 100vh;
+  color: white;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.welcome-section .lead {
-  font-size: 1.5rem;
-  font-weight: 400;
+/* Text Styling */
+.display-3 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
 }
 
-.welcome-section .btn {
-  font-size: 16px;
-  padding: 12px 25px;
-  border-radius: 30px;
+.order-heading {
+  font-family: 'Poppins', sans-serif; 
+  font-size: 4rem; 
+  font-weight: 1000; 
+  color: black;
+}
+
+.text-black {
+  position: relative;
+  z-index: 2; 
+  color: black;
+}
+
+.btn {
+  font-size: 1.25rem;
+  padding: 10px 20px;
+  margin: 0 10px;
 }

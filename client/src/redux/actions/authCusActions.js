@@ -1,27 +1,26 @@
 import axios from 'axios';
-import {
-  CUSTOMER_LOGIN_REQUEST,
-  CUSTOMER_LOGIN_SUCCESS,
-  CUSTOMER_LOGIN_FAIL,
-  CUSTOMER_LOGOUT_REQUEST,
-  CUSTOMER_LOGOUT_SUCCESS,
-  CUSTOMER_LOGOUT_FAIL,
-  CUSTOMER_REGISTER_REQUEST,
-  CUSTOMER_REGISTER_SUCCESS,
-  CUSTOMER_REGISTER_FAIL,
+import { CUSTOMER_LOGIN_REQUEST, CUSTOMER_LOGIN_SUCCESS, CUSTOMER_LOGIN_FAIL,
+  CUSTOMER_LOGOUT_REQUEST, CUSTOMER_LOGOUT_SUCCESS, CUSTOMER_LOGOUT_FAIL,
+  CUSTOMER_REGISTER_REQUEST,CUSTOMER_REGISTER_SUCCESS, CUSTOMER_REGISTER_FAIL,
 } from "../constants/authCusConstants";
 
+// Customer Login
 export const loginCustomer = (email, password) => async (dispatch) => {
   try {
     dispatch({ type: CUSTOMER_LOGIN_REQUEST });
+
     const { data } = await axios.post(
       'http://127.0.0.1:8383/authC/customer/login',
       { email, password },
-      { withCredentials: true }
+      { withCredentials: true,
+        headers: { 'Content-Type': 'application/json' }
+       } // sends/receives cookie
     );
-    localStorage.setItem('authToken', data.token);  // Store auth token
-    localStorage.setItem('customer', JSON.stringify(data.customer)); // Store customer data
-    dispatch({ type: CUSTOMER_LOGIN_SUCCESS, payload: data });
+
+    dispatch({ type: CUSTOMER_LOGIN_SUCCESS, payload: data.customer });
+    // Store customer data in localStorage
+    localStorage.setItem('authToken', data.token);
+    localStorage.setItem('customer', JSON.stringify(data.customer)); 
   } catch (error) {
     dispatch({
       type: CUSTOMER_LOGIN_FAIL,
@@ -30,30 +29,20 @@ export const loginCustomer = (email, password) => async (dispatch) => {
   }
 };
 
+// Customer Logout
 export const logoutCustomer = () => async (dispatch) => {
   try {
     dispatch({ type: CUSTOMER_LOGOUT_REQUEST });
 
-    // Remove items from localStorage and clear cookies
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('customer');
-    document.cookie = 'connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;';
-
-    // Optionally, make an API call to inform the server of logout
-    const response = await axios.post(
+    await axios.post(
       'http://127.0.0.1:8383/authC/customer/logout',
       {},
       { withCredentials: true }
     );
 
-    if (response.status === 200) {
-      dispatch({ type: CUSTOMER_LOGOUT_SUCCESS });
-    } else {
-      dispatch({
-        type: CUSTOMER_LOGOUT_FAIL,
-        payload: 'Logout failed, unexpected response',
-      });
-    }
+    localStorage.removeItem('customer');
+    localStorage.removeItem('authToken');
+    dispatch({ type: CUSTOMER_LOGOUT_SUCCESS });
   } catch (error) {
     dispatch({
       type: CUSTOMER_LOGOUT_FAIL,
@@ -62,12 +51,41 @@ export const logoutCustomer = () => async (dispatch) => {
   }
 };
 
+// Customer Register
 export const registerCustomer = (name, email, password) => async (dispatch) => {
   try {
     dispatch({ type: CUSTOMER_REGISTER_REQUEST });
-    const { data } = await axios.post('http://127.0.0.1:8383/authC/customer/signup', { name, email, password });
-    dispatch({ type: CUSTOMER_REGISTER_SUCCESS, payload: data });
+
+    const { data } = await axios.post(
+      'http://127.0.0.1:8383/authC/customer/signup',
+      { name, email, password },
+      { withCredentials: true }
+    );
+
+    dispatch({ type: CUSTOMER_REGISTER_SUCCESS, payload: data.customer });
   } catch (error) {
-     dispatch({ type: CUSTOMER_REGISTER_FAIL, payload: error.response?.data?.message || error.message });
+    dispatch({
+      type: CUSTOMER_REGISTER_FAIL,
+      payload: error.response?.data?.message || error.message,
+    });
   }
-};  
+};
+
+/*
+// Auto Load Logged-In Customer on App Start
+export const loadCustomer = () => async (dispatch) => {
+  try {
+    dispatch({ type: CUSTOMER_LOGIN_REQUEST });
+
+    const { data } = await axios.get(
+      'http://127.0.0.1:8383/authC/customer/me',
+      { withCredentials: true }
+    );
+
+    dispatch({ type: CUSTOMER_LOGIN_SUCCESS, payload: data.customer });
+    localStorage.setItem('customer', JSON.stringify(data.customer));
+  } catch (error) {
+    dispatch({ type: CUSTOMER_LOGOUT_SUCCESS }); // optional fallback
+  }
+};
+*/

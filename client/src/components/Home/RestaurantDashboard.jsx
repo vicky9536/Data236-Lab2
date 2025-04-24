@@ -6,97 +6,77 @@ import { deleteDish } from '../../redux/actions/dishActions';
 import { Card, Container, Row, Col, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
+import Layout from '../Layout/Layout'; // Layout Import for consistent navbar/sidebar
 
 const RestaurantDashboard = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-  
-    const restaurant_Id = useSelector((state) => state.restaurantLogin.restaurant.id);
-  
-    const { loading, dishesByRestaurant, error } = useSelector(
-      (state) => state.restDishesList
-    );
-    const dishes = dishesByRestaurant?.[restaurant_Id] || [];
-    const [refresh, setRefresh] = useState(false);
-  
-    useEffect(() => {
-      if (restaurant_Id) {
-        dispatch(fetchRestDishes(restaurant_Id));
-      }
-    }, [restaurant_Id, dispatch, refresh]);
-  
-    const restaurant = useSelector((state) => state.getRestProfile.restaurant);
-  
-    console.log("dishes:", dishes);
-    useEffect(() => {
-      if (restaurant_Id) {
-        dispatch(getRestProfile(restaurant_Id));
-      }
-    }, [dispatch, restaurant_Id, refresh]);
-  
-    // Ensure that hooks are called before the early return
-    if (!restaurant) {
-      return <div>Restaurant not found!</div>;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const restaurant_Id = useSelector((state) => state.restaurantLogin.restaurant.id);
+
+  const { loading, dishesByRestaurant, error } = useSelector(
+    (state) => state.restDishesList
+  );
+  const dishes = dishesByRestaurant?.[restaurant_Id] || [];
+  const [refresh, setRefresh] = useState(false);
+
+  useEffect(() => {
+    if (restaurant_Id) {
+      dispatch(fetchRestDishes(restaurant_Id));
     }
-  
-    const { name, description, location, timings, image_url, contact_info } = restaurant;
-  
-    const handleLogoutClick = async (e) => {
-      e.preventDefault();
-      navigate("/");
-    };
-  
-    const handleEditProfileClick = async () => {
-      navigate(`/restaurant/edit_profile/${restaurant.id}`);
-    };
-  
-    const handleViewOrderClick = async () => {
-      navigate("/restaurant/order");
-    };
+  }, [restaurant_Id, dispatch, refresh]);
 
-    const handleEditDish = (dish) => {
-        navigate(`/restaurant/edit_dish/${dish.id}`);
-    };
-  
-    const handleAddDish = async (restaurant_Id) => {
-      navigate(`/restaurant/add_dish/${restaurant_Id}`);
-    };
+  const restaurant = useSelector((state) => state.getRestProfile.restaurant);
 
-    const handleDeleteDish = async (dishId,restaurant_Id) => {
-        console.log("Deleting dish with ID:", dishId);
-      try {
-        await dispatch(deleteDish(dishId,restaurant_Id));
-        console.log("Dish deleted successfully");
-        setRefresh(!refresh); 
-      } catch (error) {
-        console.error("Error deleting dish:", error);
-      }
-    };
-  
-    return (
+  console.log("dishes:", dishes);
+  useEffect(() => {
+    if (restaurant_Id) {
+      dispatch(getRestProfile(restaurant_Id));
+    }
+  }, [dispatch, restaurant_Id, refresh]);
+
+  // Ensure that hooks are called before the early return
+  if (!restaurant) {
+    return <div>Restaurant not found!</div>;
+  }
+
+  const { name, description, location, timings, image_url, contact_info } = restaurant;
+
+  const handleLogoutClick = async (e) => {
+    e.preventDefault();
+    navigate("/");
+  };
+
+  const handleEditProfileClick = async () => {
+    navigate(`/restaurant/edit_profile/${restaurant.id}`);
+  };
+
+  const handleViewOrderClick = async () => {
+    navigate("/restaurant/order");
+  };
+
+  const handleEditDish = (dish) => {
+    navigate(`/restaurant/edit_dish/${dish.id}`);
+  };
+
+  const handleAddDish = async (restaurant_Id) => {
+    navigate(`/restaurant/add_dish/${restaurant_Id}`);
+  };
+
+  const handleDeleteDish = async (dishId, restaurant_Id) => {
+    console.log("Deleting dish with ID:", dishId);
+    try {
+      await dispatch(deleteDish(dishId, restaurant_Id));
+      console.log("Dish deleted successfully");
+      setRefresh(!refresh);
+    } catch (error) {
+      console.error("Error deleting dish:", error);
+    }
+  };
+
+  return (
+    <Layout>
       <div className="restaurant-page">
-        {/* Navigation Bar */}
-        <nav className="navbar navbar-expand-lg navbar-dark shadow-sm">
-          <div className="container-fluid">
-            <a className="navbar-brand">
-              <img
-                src="/images/ubereats_logo.png"
-                alt="Uber Eats Logo"
-                style={{ height: '20px' }}
-              />
-            </a>
-            <div className="d-flex">
-              <button onClick={handleViewOrderClick}
-              className="btn btn-outline-dark px-4 rounded-pill" style={{ marginRight: '10px' }}>
-                View Order
-              </button>
-              <button onClick={handleLogoutClick} className="btn btn-dark px-4 rounded-pill custom-button-spacing">
-                Logout
-              </button>
-            </div>
-          </div>
-        </nav>
-  
         {/* Restaurant Details Section */}
         <Container className="mt-5">
           <Row className="text-center">
@@ -104,7 +84,7 @@ const RestaurantDashboard = () => {
               <img src={image_url} alt={name} className="restaurant-image" />
             </Col>
           </Row>
-  
+
           <Row className="text-center">
             <Col>
               <h2 className="restaurant-name">{name}</h2>
@@ -121,12 +101,20 @@ const RestaurantDashboard = () => {
                 {contact_info || 'No contact information available.'}
               </p>
             </Col>
-            <Button onClick={handleEditProfileClick}>Edit profile</Button>
+            <Col>
+              <Button
+                onClick={handleEditProfileClick}
+                variant="outline-primary"
+                className="w-100"
+              >
+                Edit Profile
+              </Button>
+            </Col>
           </Row>
-  
+
           {loading && <p className="text-center text-primary">Loading...</p>}
           {error && <p className="text-center text-danger">{error}</p>}
-  
+
           {/* Restaurant Menu Section */}
           <Row className="mt-5">
             <Col>
@@ -160,14 +148,22 @@ const RestaurantDashboard = () => {
                 <p className="text-center">No menu available for this restaurant.</p>
               )}
             </Col>
-            <Button onClick={() => handleAddDish(restaurant_Id)} variant="primary" className="add-dish-btn">
-              Add Dish
-            </Button>
+          </Row>
+          <Row>
+            <Col>
+              <Button
+                onClick={() => handleAddDish(restaurant_Id)}
+                variant="primary"
+                className="add-dish-btn w-100 mt-4"
+              >
+                Add Dish
+              </Button>
+            </Col>
           </Row>
         </Container>
       </div>
-    );
-  };
-  
-  export default RestaurantDashboard;
-  
+    </Layout>
+  );
+};
+
+export default RestaurantDashboard;

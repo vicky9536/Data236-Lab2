@@ -5,17 +5,19 @@
     const initialState = { loading: false, customer: null, error: null };
     export const customerLoginReducer = (state = initialState, action) => {
         switch (action.type) {
-            case CUSTOMER_LOGIN_REQUEST:
-                return { loading: true, customer: null, error: null };
-            case CUSTOMER_LOGIN_SUCCESS:
-                return { loading: false, customer: action.payload, error: null };
-            case CUSTOMER_LOGIN_FAIL:
-                return { loading: false, customer: null, error: action.payload };
-            default:
-                return state;
+          case CUSTOMER_LOGIN_REQUEST:
+            return { loading: true, customer: null, error: null };
+          case CUSTOMER_LOGIN_SUCCESS:
+            return { loading: false, customer: action.payload, error: null };
+          case CUSTOMER_LOGIN_FAIL:
+            return { loading: false, customer: null, error: action.payload };
+          case CUSTOMER_LOGOUT_SUCCESS:
+            return { loading: false, customer: null, error: null };
+          default:
+            return state;
         }
     };
-
+      
     const initialStateLogout = { loading: false, customer: null, error: null };
     export const customerLogoutReducer = (state = initialStateLogout, action) => {
         switch (action.type) {

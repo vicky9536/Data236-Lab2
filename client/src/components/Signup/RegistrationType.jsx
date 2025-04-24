@@ -8,11 +8,11 @@ const LoginType = () => {
   const navigate = useNavigate();
 
   const handleCustomerClick = () => {
-    navigate('/customer_login');
+    navigate('/customer_register');
   };
 
   const handleRestaurantClick = () => {
-    navigate('/restaurant_login');
+    navigate('/restaurant_register');
   };
 
   return (

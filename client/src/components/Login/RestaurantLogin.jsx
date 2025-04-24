@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginRestaurant } from '../../redux/actions/authRestActions';
+import Layout from '../Layout/Layout';
 
 const RestaurantLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -15,88 +17,113 @@ const RestaurantLogin = () => {
   const restaurantLogin = useSelector((state) => state.restaurantLogin || {});
   const { loading, restaurant, error } = restaurantLogin;
 
-  console.log('restaurant:', restaurant);
-  console.log('localStorage.getItem:', localStorage.getItem('authToken'));
-
   useEffect(() => {
-    // If the merchant is already logged in, redirect to the dashboard
     if (restaurant && localStorage.getItem('authToken')) {
       navigate('/restaurant_dashboard');
     }
   }, [restaurant, navigate]);
 
+  useEffect(() => {
+    if (error) {
+      console.error('Restaurant login error:', error);
+    }
+  }, [error]);
+
   const handleLogin = (e) => {
     e.preventDefault();
+    setErrorMessage('');
 
-    if (!email || !password) {
-      setErrorMessage('Both fields are required');
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedEmail || !trimmedPassword) {
+      setErrorMessage('Both fields are required.');
       return;
     }
-    console.log('Sending login request with:', { email, password });
-    dispatch(loginRestaurant(email, password));
-  };
 
-  const handleSignupClick = async () => {
-    navigate('/signup');
+    if (!/\S+@\S+\.\S+/.test(trimmedEmail)) {
+      setErrorMessage('Please enter a valid email.');
+      return;
+    }
+
+    dispatch(loginRestaurant(trimmedEmail, trimmedPassword));
   };
 
   return (
-    <div className="login-page" style={{ backgroundColor: '#e0e4e8', minHeight: '100vh' }}>
-      {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark shadow-sm ">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="/">
-            <img src="/images/ubereats_logo.png" alt="Uber Eats Logo" style={{ height: '20px' }} />
-          </a>
-          <div className="d-flex">
-            <button onClick={() => navigate('/login')} className="btn btn-outline-dark mx-2 px-4 rounded-pill">Login</button>
-            <button onClick={handleSignupClick} className="btn btn-dark px-4 rounded-pill">Sign Up</button>
-          </div>
-        </div>
-      </nav>
+    <Layout>
+      <div className="login-page" style={{ backgroundColor: '#e0e4e8', minHeight: '100vh' }}>
+        <Container className="d-flex align-items-center justify-content-center"
+         style={{ marginTop: '0', paddingTop: '0', height: '100vh' }}>
+          <Row className="w-100">
+            <Col md={6} className="mx-auto">
+              <div className="login-box p-4 bg-white rounded shadow">
+                <h2 className="text-center mb-4">Merchant Login</h2>
+                <Form onSubmit={handleLogin}>
+                  <Form.Group controlId="formEmail">
+                    <Form.Label>Email Address:</Form.Label>
+                    <Form.Control
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        setErrorMessage('');
+                      }}
+                      required
+                    />
+                  </Form.Group>
 
-      <Container className="d-flex align-items-center justify-content-center">
-        <Row className="w-100">
-          <Col md={6} className="mx-auto">
-            <div className="login-box p-4">
-              <h2 className="text-center mb-4">Merchant Login</h2>
-              <Form onSubmit={handleLogin}>
-                <Form.Group controlId="formEmail">
-                  <Form.Label>Email Address:</Form.Label>
-                  <Form.Control 
-                    type="email" 
-                    placeholder="Enter your email"
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                  />
-                </Form.Group>
+                  <Form.Group controlId="formPassword" className="mt-3">
+                    <Form.Label>Password:</Form.Label>
+                    <div className="d-flex">
+                      <Form.Control
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                          setErrorMessage('');
+                        }}
+                        required
+                      />
+                      <Button
+                        variant="link"
+                        onClick={() => setShowPassword((prevState) => !prevState)}
+                        className="ms-2"
+                      >
+                        {showPassword ? 'Hide' : 'Show'}
+                      </Button>
+                    </div>
+                  </Form.Group>
 
-                <Form.Group controlId="formPassword">
-                  <Form.Label>Password:</Form.Label>
-                  <Form.Control 
-                    type="password" 
-                    placeholder="Enter your password"
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                  />
-                </Form.Group>
+                  {(error || errorMessage) && (
+                    <Alert variant="danger" className="text-center mt-3">
+                      {errorMessage || error}
+                    </Alert>
+                  )}
 
-                {error && <p className="text-danger text-center mt-3">{error}</p>}
-                {errorMessage && <p className="text-danger text-center mt-3">{errorMessage}</p>}
+                  <Button variant="success" type="submit" className="w-100 mt-3" disabled={loading}>
+                    {loading ? <><Spinner animation="border" size="sm" /> Logging in...</> : 'Login'}
+                  </Button>
+                </Form>
 
-                <Button variant="success" type="submit" className="w-100 mt-3" disabled={loading}>
-                  {loading ? 'Logging in...' : 'Login'}
-                </Button>
-              </Form>
-
-              <div className="text-center mt-3">
-                <p className="text-muted">Don't have an account? <a href="/signup" style={{ color: '#4CAF50' }}>Sign up</a></p>
+                <div className="text-center mt-3">
+                  <p className="text-muted">
+                    Don't have an account?{' '}
+                    <span
+                      style={{ color: '#4CAF50', cursor: 'pointer' }}
+                      onClick={() => navigate('/registration_type')}
+                    >
+                      Sign up
+                    </span>
+                  </p>
+                </div>
               </div>
-            </div>
-          </Col>
-        </Row>
-      </Container>
-    </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </Layout>
   );
 };
 

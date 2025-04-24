@@ -1,0 +1,124 @@
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Sidebar off-screen by default */
+    width: 250px;
+    height: 100vh;
+    background-color: #00b140;
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+  }
+  
+  /* Open Sidebar */
+  .sidebar.open {
+    left: 0;
+  }
+  
+  /* Sidebar Content */
+  .sidebar-content {
+    padding: 20px;
+    padding-top: 80px; /* Increased space on top to separate from the hamburger (adjusted from 50px) */
+  }
+  
+  /* Main Content */
+  .main-content {
+    transition: filter 0.3s ease-in-out;
+    filter: none; /* Remove any blur effect by default */
+  }
+  
+  /* Enable blur when sidebar is open */
+  .main-content.blurred {
+    filter: blur(4px);
+  }
+  
+  /* Navbar Styling */
+  .navbar {
+    margin-bottom: 0;
+  }
+  
+  /* Navbar Left Styling - Keep it horizontal */
+  .navbar-left {
+    display: flex;
+    align-items: center; /* Keep elements aligned horizontally */
+    position: relative;
+    gap: 10px; /* Add space between the elements */
+  }
+  
+  /* Hamburger Icon Styling */
+  .hamburger-menu {
+    margin-right: 10px; /* Slight space between icon and text */
+    margin-left: 10px; /* Space on the left */
+    cursor: pointer;
+  }
+  
+  /* Remove Menu Text */
+  .menu-text {
+    display: none; /* Hide "Menu" text by default */
+  }
+  
+  /* Navbar Brand Styling */
+  .navbar-brand img {
+    height: 20px;
+  }
+  
+  /* Ensure the navbar has some padding */
+  .navbar {
+    padding: 10px 20px;
+  }
+  
+  /* Navbar Right Styling */
+  .navbar-right {
+    display: flex;
+  }
+  
+  /* Button Styling */
+  .btn {
+    font-size: 1.25rem;
+    padding: 10px 20px;
+    margin: 0 10px;
+  }
+  
+  /* Ensure the hamburger icon stays visible when sidebar is open */
+  .hamburger-menu {
+    z-index: 1010;
+  }
+  
+  /* Change Hamburger Icon Color when Sidebar is Open */
+  .hamburger-menu.open {
+    color: white !important;
+  }
+  
+  /* Sidebar Layout (Column for items inside sidebar) */
+  .sidebar-left {
+    display: flex;
+    flex-direction: column; /* Stack items vertically inside the sidebar */
+    align-items: flex-start; /* Align items to the left */
+    padding-top: 20px;
+  }
+  
+  /* Menu Links Styling */
+  .menu-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 30px; /* Increased space between the hamburger and the first menu item */
+  }
+  
+  .menu-item {
+    margin-bottom: 20px; /* Increased space between menu items */
+  }
+  
+  .menu-item a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    display: block;
+    padding: 12px; /* Slightly increased padding for better clickability */
+    transition: background-color 0.3s ease;
+  }
+  
+  .menu-item a:hover {
+    background-color: #007d32;
+    border-radius: 5px;
+  }
+  

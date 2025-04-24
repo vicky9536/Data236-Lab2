@@ -15,18 +15,17 @@ export const fetchRestaurants = () => async (dispatch) => {
     }
 };
 
-export const fetchRestDishes = (restaurant_Id) => async (dispatch) => {
+export const fetchRestDishes = (restaurantId) => async (dispatch) => {
     try {
         dispatch({ type: REST_DISHES_LIST_REQUEST });
-
-        const { data } = await axios.get(`http://127.0.0.1:8383/resDb/restaurants/${restaurant_Id}/dishes`);
-        
-        console.log("data:", data);  
+        const { data } = await axios.get(`http://127.0.0.1:8383/resDb/restaurants/${restaurantId}/dishes`);
+        console.log("restaurantId:", restaurantId);
+        console.log("dish data:", data);  
         dispatch({
             type: REST_DISHES_LIST_SUCCESS,
             payload: { 
-                restaurant_Id: restaurant_Id,  // Keep restaurant_Id (with underscore)
-                Dishes: data.Dishes || []  // Keep Dishes (capital D)
+                restaurantId: restaurantId,
+                dishes: data.dishes || [] 
             }
         });
     } catch (error) {

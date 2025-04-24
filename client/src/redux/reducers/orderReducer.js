@@ -8,7 +8,6 @@ export const orderGetReducer = (state = initialState, action) => {
         case GET_ORDER_REQUEST:
             return { loading: true, orders: null, error: null };
         case GET_ORDER_SUCCESS:
-            console.log("orderGetReducer: ", action.payload);
             return { loading: false, orders: action.payload, error: null };
         case  GET_ORDER_FAILURE:
             return { loading: false, orders: null, error: action.payload };

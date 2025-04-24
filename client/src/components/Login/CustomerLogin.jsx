@@ -1,81 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerCustomer } from '../../redux/actions/authCusActions';
-import Layout from '../Layout/Layout';
+import { loginCustomer } from '../../redux/actions/authCusActions';
+import Layout from '../Layout/Layout'; // using Layout instead of CustomTopNavbar
 
-const CustomerSignup = () => {
-  const [name, setName] = useState('');
+const CustomerLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const customerRegister = useSelector((state) => state.customerRegister || {});
-  const { loading, customer, error } = customerRegister;
+  const customerLogin = useSelector((state) => state.customerLogin || {});
+  const { loading, customer, error } = customerLogin;
+
+  useEffect(() => {
+    if (customer) {
+      navigate('/customer_dashboard');
+    }
+  }, [customer, navigate]);
 
   useEffect(() => {
     if (error) {
-      console.error('Registration error:', error);
+      console.error('Customer login error:', error);
     }
   }, [error]);
 
-  const clearErrorsOnInput = () => {
-    if (errorMessage) setErrorMessage('');
-  };
-
-  const handleSignup = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setErrorMessage('');
 
-    const trimmedName = name.trim();
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
 
-    if (!trimmedName || !trimmedEmail || !trimmedPassword) {
-      setErrorMessage('All fields are required.');
+    if (!trimmedEmail || !trimmedPassword) {
+      setErrorMessage('Both fields are required.');
       return;
     }
 
-    dispatch(registerCustomer(trimmedName, trimmedEmail, trimmedPassword))
-      .then(() => {
-        navigate('/customer_login');
-      })
-      .catch((err) => {
-        console.error('Signup failed:', err);
-        setErrorMessage(err.message || 'Signup failed');
-      });
+    if (!/\S+@\S+\.\S+/.test(trimmedEmail)) {
+      setErrorMessage('Please enter a valid email.');
+      return;
+    }
+
+    dispatch(loginCustomer(trimmedEmail, trimmedPassword));
   };
 
   return (
     <Layout>
-      <div className="signup-page" style={{ backgroundColor: '#e0e4e8', minHeight: '100vh' }}>
+      <div className="login-page" style={{ backgroundColor: '#e0e4e8', minHeight: '100vh' }}>
         <Container className="d-flex align-items-center justify-content-center"
          style={{ marginTop: '0', paddingTop: '0', height: '100vh' }}>
           <Row className="w-100">
             <Col md={6} className="mx-auto">
-              <div className="signup-box p-4 bg-white rounded shadow">
-                <h2 className="text-center mb-4">Customer Registration</h2>
-                <Form onSubmit={handleSignup}>
-                  <Form.Group controlId="formName">
-                    <Form.Label>Full Name:</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter your full name"
-                      value={name}
-                      onChange={(e) => {
-                        setName(e.target.value);
-                        clearErrorsOnInput();
-                      }}
-                      required
-                    />
-                  </Form.Group>
-
-                  <Form.Group controlId="formEmail" className="mt-3">
+              <div className="login-box p-4 bg-white rounded shadow">
+                <h2 className="text-center mb-4">Customer Login</h2>
+                <Form onSubmit={handleLogin}>
+                  <Form.Group controlId="formEmail">
                     <Form.Label>Email Address:</Form.Label>
                     <Form.Control
                       type="email"
@@ -83,7 +67,7 @@ const CustomerSignup = () => {
                       value={email}
                       onChange={(e) => {
                         setEmail(e.target.value);
-                        clearErrorsOnInput();
+                        setErrorMessage('');
                       }}
                       required
                     />
@@ -98,13 +82,13 @@ const CustomerSignup = () => {
                         value={password}
                         onChange={(e) => {
                           setPassword(e.target.value);
-                          clearErrorsOnInput();
+                          setErrorMessage('');
                         }}
                         required
                       />
                       <Button
                         variant="link"
-                        onClick={() => setShowPassword((prev) => !prev)}
+                        onClick={() => setShowPassword((prevState) => !prevState)}
                         className="ms-2"
                       >
                         {showPassword ? 'Hide' : 'Show'}
@@ -126,23 +110,20 @@ const CustomerSignup = () => {
                   >
                     {loading ? (
                       <>
-                        <Spinner animation="border" size="sm" /> Registering...
+                        <Spinner animation="border" size="sm" /> Logging in...
                       </>
                     ) : (
-                      'Register'
+                      'Login'
                     )}
                   </Button>
                 </Form>
 
                 <div className="text-center mt-3">
                   <p className="text-muted">
-                    Already have an account?{' '}
-                    <span
-                      style={{ color: '#4CAF50', cursor: 'pointer' }}
-                      onClick={() => navigate('/login_type')}
-                    >
-                      Login here
-                    </span>
+                    Don't have an account?{' '}
+                    <a href="/registration_type" style={{ color: '#4CAF50' }}>
+                      Sign up
+                    </a>
                   </p>
                 </div>
               </div>
@@ -154,4 +135,4 @@ const CustomerSignup = () => {
   );
 };
 
-export default CustomerSignup;
+export default CustomerLogin;
