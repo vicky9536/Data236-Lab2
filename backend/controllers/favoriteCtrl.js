@@ -1,5 +1,7 @@
-const { Favorite } = require('../models');
+const Favorite = require('../models/favorite');
+const Restaurant = require('../models/restaurant');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose'); 
 
 const verifyToken = (req) => {
     const authHeader = req.headers.authorization;
@@ -18,23 +20,22 @@ exports.getFavorites = async (req, res) => {
     try {
         const user = verifyToken(req);
         const customerId = user.customerId;
-        const favorites = await Favorite.findAll({
-            where: { customerId },
-            include: [{ model: Restaurant, as: 'restaurant' }]
-        });
+
+        // Fetch favorites and populate the associated restaurant details
+        const favorites = await Favorite.find({ customerId })
+            .populate('restaurantId')  
+            .exec();
+
+        console.log("Favorites with populated restaurant data:", favorites);
         res.json(favorites);
     } catch (error) {
         console.error("Error fetching favorites:", error);
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 };
 
 // Add a restaurant to favorites
 exports.addFavorite = async (req, res) => {
-    // if (!req.session.consumerId) {
-    //     return res.status(401).json({error: "Unauthorized"});
-    // }
-
     try {
         const user = verifyToken(req);
         const customerId = user.customerId;
@@ -50,24 +51,26 @@ exports.addFavorite = async (req, res) => {
 
 // Remove a restaurant from favorites
 exports.removeFavorite = async (req, res) => {
-//     if (!req.session.consumerId) {
-//         return res.status(401).json({error: "Unauthorized"});
-//     }
-
     try {
         const user = verifyToken(req);
         const customerId = user.customerId;
+
+        const favoriteId = req.params.id;
+        const objectId = new mongoose.Types.ObjectId(favoriteId);
+
+        // Try to delete the favorite by _id and customerId
         const deletedFavorite = await Favorite.findOneAndDelete({
-            _id: req.params.id,
+            _id: objectId,
             customerId
         });
+
         if (deletedFavorite) {
-            res.status(200).json({message: "Favorite removed"});
+            res.status(200).json({ message: "Favorite removed" });
         } else {
-            res.status(404).json({error: "Favorite not found"});
+            res.status(404).json({ error: "Favorite not found" });
         }
     } catch (error) {
         console.error("Error removing favorite:", error);
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 };

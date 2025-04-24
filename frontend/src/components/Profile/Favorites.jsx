@@ -43,21 +43,21 @@ const FavoriteRestaurantsPage = () => {
 
           <Row>
             {favorites && favorites.map((favorite) => (
-              <Col md={4} key={favorite.id} className="mb-4">
-                <Card onClick={(e) => handleCardClick(favorite.restaurant.id, e)} style={{ cursor: 'pointer' }}>
+              <Col md={4} key={favorite._id} className="mb-4">
+                <Card onClick={(e) => handleCardClick(favorite.restaurantId.name, e)} style={{ cursor: 'pointer' }}>
                   <Card.Img
                     variant="top"
-                    src={favorite.restaurant.image_url} 
+                    src={favorite.restaurantId.image_url} 
                     style={{ height: '200px', objectFit: 'contain' }}
                   />
                   <Card.Body>
-                    <Card.Title>{favorite.restaurant.name}</Card.Title>
-                    <Card.Text>{favorite.restaurant.img_url}</Card.Text> 
+                    <Card.Title>{favorite.restaurantId.name}</Card.Title>
+                    <Card.Text>{favorite.restaurantId.description || "No description available"}</Card.Text> 
                     
                     <div className="d-flex justify-content-center align-items-center">
                       <Button 
                         variant="danger" 
-                        onClick={() => handleRemoveFavorite(favorite.id)} 
+                        onClick={() => handleRemoveFavorite(favorite._id)} 
                         className="remove-btn"
                       >
                         Remove

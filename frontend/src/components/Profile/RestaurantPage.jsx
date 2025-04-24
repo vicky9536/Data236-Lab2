@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchRestDishes } from '../../redux/actions/restaurantActions';
 import { addFavorite } from '../../redux/actions/favoriteActions';
@@ -11,7 +11,6 @@ import './RestaurantPage.css';
 const RestaurantPage = () => {
   const { restaurant_name } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const restaurants = useSelector((state) => state.restaurantList.restaurants);
   const { loading, dishesByRestaurant, error } = useSelector((state) => state.restDishesList);
@@ -42,7 +41,7 @@ const RestaurantPage = () => {
   } = restaurant;
 
   const handleAddToFavorites = () => {
-    const restInput = { restaurant_Id: restaurant.id };
+    const restInput = { restaurantId: restaurant.id };
     dispatch(addFavorite(restInput));
     setToastMessage(`Restaurant "${restaurant.name}" added to favorites!`);
     setShowToast(true);
@@ -61,7 +60,7 @@ const RestaurantPage = () => {
   };
 
   return (
-    <Layout variant="restaurant_detail_page" isLoggedInDashboard={true}>
+    <Layout variant="dashboard" isLoggedInDashboard={true}>
       <div className="restaurant-page">
         <Container className="mt-5">
           <Row className="text-center">
