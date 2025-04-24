@@ -16,25 +16,8 @@ const CustomerProfile = () => {
         dispatch(getCusProfile());
     }, [dispatch]);
 
-    // Handle navigation actions
-    const handleCartClick = () => {
-        navigate('/cart');
-    };
-
-    const handleDashboardClick = () => {
-        navigate('/customer_dashboard');
-    };
-
-    const handleLogoutClick = () => {
-        navigate('/logout');
-    };
-
     const handleEditProfile = () => {
         navigate(`/customer_dashboard/profile/update`);
-    };
-
-    const handleFavoritesClick = () => {
-        navigate(`/customer_dashboard/profile/favorites`);
     };
 
     if (loading) {
@@ -52,7 +35,7 @@ const CustomerProfile = () => {
     const profilePic = customer.img_url ? customer.img_url : 'https://via.placeholder.com/150';
 
     return (
-        <Layout isLoggedInDashboard={true} showButtons={false} variant="profile">
+        <Layout isLoggedInDashboard={true} showButtons={false} variant="dashboard">
             <Container className="mt-5">
                 <Row className="justify-content-center">
                     <Col md={8} className="profile-container shadow-lg p-4 bg-light rounded">

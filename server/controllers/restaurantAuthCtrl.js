@@ -1,17 +1,18 @@
 //const Restaurant = require('../models/restaurant');
 const bcrypt = require('bcryptjs');
 const { Restaurant } = require('../models');  
+const jwt = require('jsonwebtoken');
+const secret = process.env.JWT_SECRET;
 
 // Restaurant signup
 exports.restaurantSignup = async (req, res) => {
     try {
-        const { name, email, location } = req.body;
-        console.log("Restaurant signup request received:", req.body.name);
-        const hasedpassword = bcrypt.hashSync(req.body.password, 10);
+        const { name, email, password, location } = req.body;
+        // const hashedpassword = bcrypt.hashSync(req.body.password, 10);
         const restaurant = await Restaurant.create({
             name,
             email,
-            password: hasedpassword,
+            password,
             location
         });
         res.status(201).json(restaurant);
@@ -25,10 +26,13 @@ exports.restaurantSignup = async (req, res) => {
 exports.restaurantLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const restaurant = await Restaurant.findOne({ where: { email } });
-        if (restaurant && bcrypt.compare(password, restaurant.password)) {
-            req.session.restaurant_Id = restaurant.id;
-            res.status(200).json(restaurant);
+        const restaurant = await Restaurant.findOne({ email });
+        if (restaurant && await bcrypt.compare(password, restaurant.password)) {
+            const payload = { id: restaurant._id, name: restaurant.name }; 
+            const token = jwt.sign(payload, secret, { expiresIn: "1h" });
+            res.status(200).json({ token: token });
+        } else {
+            res.status(401).json({error: "Invalid credentials"});
         }
     } catch (error) {
         console.error("Error logging in restaurant:", error);
@@ -38,10 +42,11 @@ exports.restaurantLogin = async (req, res) => {
 
 // Restaurant logout
 exports.restaurantLogout = async (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.status(500).json({error: "Error logging out"});
-        }
-        res.status(200).json({message: "Logged out successfully"});
-    });
+    // req.session.destroy(err => {
+    //     if (err) {
+    //         return res.status(500).json({error: "Error logging out"});
+    //     }
+    //     res.status(200).json({message: "Logged out successfully"});
+    // });
+    res.status(200).json({message: "Logged out successfully"});
 };

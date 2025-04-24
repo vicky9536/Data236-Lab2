@@ -20,50 +20,6 @@ const Layout = ({ children, showButtons = true, isLoggedInDashboard = false, var
       return (
         <>
           <li className="menu-item">
-            <a onClick={() => navigate('/customer_dashboard/profile')}>Profile</a>
-          </li>
-          <li className="menu-item">
-            <a onClick={() => navigate('/customer_dashboard/orders')}>Orders</a>
-          </li>
-          <li className="menu-item">
-            <a onClick={() => navigate('/customer_dashboard/favorites')}>Favorites</a>
-          </li>
-          <li className="menu-item">
-            <a onClick={() => navigate('/customer_dashboard/cart')}>Cart</a>
-          </li>
-          <li className="menu-item">
-            <a onClick={handleLogoutClick}>Logout</a>
-          </li>
-        </>
-      );
-    }
-
-    if (variant === "profile") {
-      return (
-        <>
-          <li className="menu-item">
-            <a onClick={() => navigate('/customer_dashboard')}>Dashboard</a>
-          </li>
-          <li className="menu-item">
-            <a onClick={() => navigate('/customer_dashboard/orders')}>Orders</a>
-          </li>
-          <li className="menu-item">
-            <a onClick={() => navigate('/customer_dashboard/favorites')}>Favorites</a>
-          </li>
-          <li className="menu-item">
-            <a onClick={() => navigate('/customer_dashboard/cart')}>Cart</a>
-          </li>
-          <li className="menu-item">
-            <a onClick={handleLogoutClick}>Logout</a>
-          </li>
-        </>
-      );
-    }
-
-    if (variant === "restaurant_detail_page") {
-      return (
-        <>
-          <li className="menu-item">
             <a onClick={() => navigate('/customer_dashboard')}>Dashboard</a>
           </li>
           <li className="menu-item">

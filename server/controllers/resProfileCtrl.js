@@ -1,9 +1,22 @@
 const { Restaurant } = require('../models');
+const jwt = require('jsonwebtoken');
+
+const verifyToken = (req) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        throw new Error("No token provided");
+    }
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+        throw new Error("Token format invalid");
+    }
+    return jwt.verify(token, process.env.JWT_SECRET);
+};
 
 // View restaurant info
 exports.viewRestInfo = async (req, res) => {
     try {
-        const restaurant = await Restaurant.findByPk(req.params.id);
+        const restaurant = await Restaurant.findOne({ name: req.params.name });
         if (!restaurant) {
             return res.status(404).json({error: "Restaurant not found"});
         }
@@ -16,16 +29,16 @@ exports.viewRestInfo = async (req, res) => {
 
 // Update restaurant info
 exports.updateRestInfo = async (req, res) => {
-    /* console.log("Received request to update restaurant profile:", req.session.restaurant_Id);
-    if (!req.session.restauran_Id) {
-        return res.status(401).json({error: "Unauthorized"});
-    }
-    */
+    // console.log("Received request to update restaurant profile:", req.session.restaurantId);
+    // if (!req.session.restaurantId) {
+    //     return res.status(401).json({error: "Unauthorized"});
+    // }
+
     try {
-        const restauran_Id = req.params.id;
-        console.log("Received request to update restaurant profile:", restauran_Id);
-        const { name, location, description, contact_info, timings, image_url } = req.body;
-        const restaurant = await Restaurant.findByPk(restauran_Id);
+        const user = verifyToken(req);
+        const restaurantId = user.id;
+        const { name, location, description, contact_info, timings } = req.body;
+        const restaurant = await Restaurant.findById(restaurantId);
         if (!restaurant) {
             return res.status(404).json({error: "Restaurant not found"});
         }
@@ -34,9 +47,8 @@ exports.updateRestInfo = async (req, res) => {
         restaurant.description = description;
         restaurant.contact_info = contact_info;
         restaurant.timings = timings;
-        restaurant.image_url = image_url;
         await restaurant.save();
-        //req.session.Restaurant = { ...req.session.Restaurant, name, location, description, contact_info, timings, image_url };
+        // user.Restaurant = { ...user.Restaurant, name, location, description, contact_info, timings };
         res.status(200).json(restaurant);
     } catch (error) {
         console.error("Error updating restaurant profile:", error);

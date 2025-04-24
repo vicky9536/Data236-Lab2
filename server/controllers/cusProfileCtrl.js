@@ -1,43 +1,65 @@
 const { Customer } = require('../models');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-// view consuumer profile
-exports.viewCusProfile = async (req, res) => {
-    try {
-        const customer_Id = req.params.id;
-        console.log("Received request to fetch customer profile:", customer_Id);
-        const customer = await Customer.findByPk(customer_Id);
-        if (!customer) {
-            return res.status(404).json({error: "Customer not found"});
-        }
-        res.status(200).json(customer);
-    } catch (error) {
-        console.error("Error fetching customer profile:", error);
-        res.status(500).json({error: error.message});
+const verifyToken = (req) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        throw new Error("No token provided");
     }
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+        throw new Error("Token format invalid");
+    }
+    return jwt.verify(token, process.env.JWT_SECRET);
 };
 
-// update customer profile
-exports.updateCusProfile = async (req, res) => {
-    const customer_Id = req.params.id;
-    console.log("Received request to update customer profile:", req.params.id);
+// view customer profile
+exports.viewCusProfile = async (req, res) => {
     try {
-        const { name, email, state, country, img_url, description } = req.body;
-        console.log("customer_Id:", customer_Id);
-        const customer = await Customer.findByPk(customer_Id);
+        const user = verifyToken(req);
+        const customerId = user.customerId;
+
+        const customer = await Customer.findById(customerId).select('-password');
         if (!customer) {
             return res.status(404).json({ error: "Customer not found" });
         }
-
-        customer.name = name;
-        customer.email = email;
-        customer.state = state;
-        customer.country = country;
-        customer.img_url = img_url;
-        customer.description = description;
         
+        res.status(200).json(customer);
+    } catch (error) {
+        console.error("Error fetching customer profile:", error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// update consumer profile
+exports.updateCusProfile = async (req, res) => {
+    // console.log("Received request to update consumer profile:", req.session.consumerId);
+    // if (!req.session.consumerId) {
+    //     return res.status(401).json({error: "Unauthorized"});
+    // }
+    try {
+        const user = verifyToken(req); 
+        const customerId = user.customerId;
+
+        const { name, email, state, country, description, profilePic } = req.body;
+
+        const customer = await Customer.findById(customerId);
+        if (!customer) {
+            return res.status(404).json({ error: "Customer not found" });
+        }
+        customer.name = name || customer.name;
+        customer.email = email || customer.email;
+        customer.state = state || customer.state;
+        customer.country = country || customer.country;
+        if (description !== undefined && description !== null) {
+            customer.description = description;
+        }
+        customer.profilePic = profilePic || customer.profilePic;
+
         await customer.save();
-        console.log("Customer profile updated successfully:", customer);
+
+        console.log("Updated customer profile:", customer);
         res.status(200).json(customer);
     } catch (error) {
         console.error("Error updating customer profile:", error);

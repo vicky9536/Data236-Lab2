@@ -1,22 +1,34 @@
 const { Dish } = require('../models');
+const jwt = require('jsonwebtoken');
+
+const verifyToken = (req) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        throw new Error("No token provided");
+    }
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+        throw new Error("Token format invalid");
+    }
+    return jwt.verify(token, process.env.JWT_SECRET);
+};
 
 // Create new dish
 exports.createDish = async (req, res) => {
-    /*
-    if (!req.session.restaurant_Id) {
-        return res.status(401).json({error: "Unauthorized"});
-    }
-    */
-    const restaurant_Id = req.params.restaurant_Id;
+    // if (!req.session.restaurantId) {
+    //     return res.status(401).json({error: "Unauthorized"});
+    // }
 
     try {
+        const user = verifyToken(req);
+        const restaurantId = user.restaurantId;
         const { name, description, price, category } = req.body;
         const dish = await Dish.create({
             name,
             description,
             price,
             category,
-            restaurant_Id: restaurant_Id
+            restaurantId
         });
         res.status(201).json(dish);
     } catch (error) {
@@ -25,42 +37,25 @@ exports.createDish = async (req, res) => {
     }
 };
 
-// Get one dish
-exports.getOneDish = async (req, res) => {
-    const dish_Id = req.params.dish_Id;
-    const restaurant_Id = req.params.restaurant_Id;
-    try {
-        const dish = await Dish.findOne({ where: { id: dish_Id, restaurant_Id: restaurant_Id } });
-        if (dish) {
-            res.status(200).json(dish);
-        } else {
-            res.status(404).json({error: "Dish not found"});
-        }
-    } catch (error) {
-        res.status(500).json({error: error.message});
-    }
-};
-
 // Update dish
 exports.updateDish = async (req, res) => {
-    /*
-    if (!req.session.restaurant_Id) {
-        return res.status(401).json({error: "Unauthorized"});
-    }
-    */
-    const dish_Id = req.params.dish_Id;
-    const restaurant_Id = req.params.restaurant_Id;
+    // if (!req.session.restaurantId) {
+    //     return res.status(401).json({error: "Unauthorized"});
+    // }
 
     try {
-        const [updated] = await Dish.update(req.body, {
-            where: { id: dish_Id, restaurant_Id: restaurant_Id }
-        });
-        if (updated) {
-            const updatedDish = await Dish.findOne({ where: { id: dish_Id, restaurant_Id: restaurant_Id } });
-            res.status(200).json(updatedDish);
-        } else {
-            res.status(404).json({error: "Dish not found"});
+        const user = verifyToken(req);
+        const restaurantId = user.restaurantId;
+        const updatedDish = await Dish.findOneAndUpdate(
+            { _id: req.params.id, restaurantId },
+            req.body,
+            { new: true } // return updated doc
+        );
+
+        if (!updatedDish) {
+            return res.status(404).json({ error: "Dish not found" });
         }
+        res.status(200).json(updatedDish);
     } catch (error) {
         console.error("Error updating dish:", error);
         res.status(500).json({error: error.message});
@@ -69,22 +64,22 @@ exports.updateDish = async (req, res) => {
 
 // Delete dish
 exports.deleteDish = async (req, res) => {
-    /*
-    if (!req.session.restaurant_Id) {
-        return res.status(401).json({error: "Unauthorized"});
-    }
-    */
-    const dish_Id = req.params.dish_Id;
-    const restaurant_Id = req.params.restaurant_Id;
+    // if (!req.session.restaurantId) {
+    //     return res.status(401).json({error: "Unauthorized"});
+    // }
+
     try {
-        const deleted = await Dish.destroy({
-            where: { id: dish_Id, restaurant_Id: restaurant_Id }
+        const user = verifyToken(req);
+        const restaurantId = user.restaurantId;
+        const deletedDish = await Dish.findOneAndDelete({
+            _id: req.params.id,
+            restaurantId
         });
-        if (deleted) {
-            res.status(200).json({message: "Dish deleted"});
-        } else {
-            res.status(404).json({error: "Dish not found"});
+
+        if (!deletedDish) {
+            return res.status(404).json({ error: "Dish not found" });
         }
+        res.status(200).json({ message: "Dish deleted" });
     } catch (error) {
         console.error("Error deleting dish:", error);
         res.status(500).json({error: error.message});

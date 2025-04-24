@@ -1,68 +1,63 @@
+// restaurant.js
 'use strict';
-const { Model } = require('sequelize');
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-module.exports = (sequelize, DataTypes) => {
-    class Restaurant extends Model {}
-
-    Restaurant.init({
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        location: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        description: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
-        contact_info: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        image_url: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        timings: {
-            type: DataTypes.STRING,
-            allowNull: true
-        }
+const restaurantSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
     },
-    {
-        sequelize,
-        modelName: 'Restaurant',
-        tableName: 'restaurants',
-        timestamps: false,
-        hooks: {
-            beforeCreate: async (customer) => {
-                if (customer.password) {
-                    customer.password = await bcrypt.hash(customer.password, 10);
-                }
-            }
-        }
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    location: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String
+    },
+    contact_info: {
+        type: String
+    },
+    image_url: {
+        type: String
+    },
+    timings: {
+        type: String
     }
-    );
+}, {
+    timestamps: false
+});
 
-    Restaurant.associate = (models) => {
-        Restaurant.hasMany(models.Dish, { foreignKey: 'restaurant_Id' });
-        Restaurant.hasMany(models.Order, { foreignKey: 'restaurant_Id' });
-    };
+restaurantSchema.pre('save', async function (next) {
+    if (this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, 10);
+    }
+    next();
+});
 
-    return Restaurant;
-};
+restaurantSchema.virtual('dishes', {
+    ref: 'Dish',
+    localField: '_id',
+    foreignField: 'restaurantId'
+});
+
+restaurantSchema.virtual('orders', {
+    ref: 'Order',
+    localField: '_id',
+    foreignField: 'restaurantId'
+});
+
+restaurantSchema.set('toObject', { virtuals: true });
+restaurantSchema.set('toJSON', { virtuals: true });
+
+const Restaurant = mongoose.model('Restaurant', restaurantSchema);
+
+module.exports = Restaurant;

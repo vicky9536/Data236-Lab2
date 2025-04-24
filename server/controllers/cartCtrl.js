@@ -2,44 +2,58 @@ const { Cart } = require('../models');
 const { Customer } = require('../models');
 const { Dish } = require('../models');
 const { Order } = require('../models');
+const jwt = require('jsonwebtoken');
+
+const verifyToken = (req) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        throw new Error("No token provided");
+    }
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+        throw new Error("Token format invalid");
+    }
+    return jwt.verify(token, process.env.JWT_SECRET);
+};
 
 // review cart
 exports.getCart = async (req, res) => {
-    /*
-    if (!req.session.customer_Id) {
-        return res.status(401).json({error: "Unauthorized"});
-    }
-    */
+    // if (!req.session.consumerId) {
+    //     return res.status(401).json({error: "Unauthorized"});
+    // }
+
     try {
-        // const customer_Id = req.session.customer_Id;
-        const customer_Id = req.params.customer_Id;
-        const cartItems = await Cart.findAll({
-            where: { customer_Id },
-            include: [{ model: Dish }]
-        });
+        const user = verifyToken(req);
+        const customerId = user.customerId;
+        const cartItems = await Cart.find({ customerId }).populate({
+            path: 'dishId',
+            select: 'name description price category'
+        });        
         res.status(200).json(cartItems);
     } catch (error) {
         console.error("Error fetching cart items:", error);
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({error: "Invalid token"});
+        } 
         res.status(500).json({error: error.message});
     }
 };
 
 // add dish to cart
 exports.addCart = async (req, res) => {
-    /*
-    if (!req.session.customer_Id) {
-        return res.status(401).json({error: "Unauthorized"});
-    }
-    */
+    // if (!req.session.consumerId) {
+    //     return res.status(401).json({error: "Unauthorized"});
+    // }
 
     try {
-        const { dish_Id, quantity, restaurant_Id } = req.body;
-        const customer_Id = req.params.customer_Id;
+        const { dishId, quantity, restaurantId } = req.body;
+        const user = verifyToken(req);
+        const customerId = user.customerId;
         const cartItem = await Cart.create({
-            dish_Id,
+            dishId,
             quantity,
-            restaurant_Id,
-            customer_Id
+            restaurantId,
+            customerId
         });
         res.status(201).json(cartItem);
     } catch (error) {
@@ -50,17 +64,14 @@ exports.addCart = async (req, res) => {
 
 // delete dish from cart
 exports.deleteCart = async (req, res) => {
-    /*
-    if (!req.session.customer_Id) {
-        return res.status(401).json({error: "Unauthorized"});
-    }
-    */
+
     try {
-        const customer_Id = req.params.customer_Id;
-        const dish_Id = req.params.dish_Id;
-        const deleted = await Cart.destroy({
-            where: { id: dish_Id, customer_Id: customer_Id }
-        });
+        const user = verifyToken(req);
+        const customerId = user.customerId;    
+        const deleted = await Cart.findOneAndDelete({
+            _id: req.params.id,
+            customerId
+        });        
         if (deleted) {
             res.status(200).json({message: "Dish deleted from cart"});
         } else {
@@ -74,36 +85,37 @@ exports.deleteCart = async (req, res) => {
 
 // checkout
 exports.checkout = async (req, res) => {
-    /*
-    if (!req.session.customer_Id) {
-        return res.status(401).json({error: "Unauthorized"});
-    }
-    */
+    // if (!req.session.consumerId) {
+    //     return res.status(401).json({error: "Unauthorized"});
+    // }
 
     try {
-        const customer_Id = req.params.customer_Id;
-        const cartItems = await Cart.findAll({
-            where: { customer_Id },
-            include: [{ model: Dish }]
-        });
+        const user = verifyToken(req);
+        const customerId = user.customerId;
+        const cartItems = await Cart.find({ customerId }).populate('dishId');        
         console.log("Cart Items:", cartItems);
 
+        if (cartItems.length === 0) {
+            return res.status(400).json({ error: "Cart is empty" });
+        }
         const orderItems = cartItems.map(item => ({
-            dish_Id: item.dish_Id,
-            name: item.Dish.name,
+            dishId: item.dishId._id,
+            name: item.dishId.name,
             quantity: item.quantity,
-            price: item.Dish.price,
+            price: item.dishId.price,
         }));
-        const totalPrice = cartItems.reduce((total, item) => total + (item.Dish.price * item.quantity), 0);
+        const totalPrice = cartItems.reduce((total, item) => 
+            total + (item.dishId.price * item.quantity), 0);
 
         const order = await Order.create({
-            customer_Id: customer_Id,
-            restaurant_Id: cartItems[0].restaurant_Id,
+            customerId,
+            restaurant_id: cartItems[0].restaurantId,
             price: totalPrice,
             status: 'New',
-            items: JSON.stringify(orderItems)
+            items: orderItems
         });
-        await Cart.destroy({ where: { customer_Id } });
+        await Cart.deleteMany({ customerId });
+
         res.status(200).json(order);
     } catch (error) {
         console.error("Error checking out:", error);

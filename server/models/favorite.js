@@ -1,48 +1,22 @@
+// favorite.js
 'use strict';
-const { Model } = require('sequelize');
-const Customer = require('./customer');
-const Restaurant = require('./restaurant');
+const mongoose = require('mongoose');
 
-module.exports = (sequelize, DataTypes) => {
-    class Favorite extends Model {}
-
-    Favorite.init({
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
-        customer_Id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'Customers',
-                key: 'id'
-            },
-            field: 'customer_Id'
-        },
-        restaurant_Id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'Restaurants',
-                key: 'id'
-            },
-            field: 'restaurant_Id'
-        }
+const favoriteSchema = new mongoose.Schema({
+    customerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Customer',
+        required: true
     },
-    {
-        sequelize,
-        modelName: 'Favorite',
-        tableName: 'favorites',
-        timestamps: false
+    restaurantId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Restaurant',
+        required: true
     }
-    );
+}, {
+    timestamps: false
+});
 
-    Favorite.associate = (models) => {
-        Favorite.belongsTo(models.Customer, { foreignKey: 'customer_Id' });
-        Favorite.belongsTo(models.Restaurant, { foreignKey: 'restaurant_Id' });
-    };
+const Favorite = mongoose.model('Favorite', favoriteSchema);
 
-    return Favorite;
-};
+module.exports = Favorite;

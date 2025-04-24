@@ -1,62 +1,48 @@
 'use strict';
-const { Model } = require('sequelize');
-const Customer = require('./customer');
-const Restaurant = require('./restaurant');
+const mongoose = require('mongoose');
 
-module.exports = (sequelize, DataTypes) => {
-    class Order extends Model {}
 
-    Order.init({
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
-        restaurant_Id: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-        customer_Id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            field: 'customer_Id'
-        },
-        status: {
-            type: DataTypes.ENUM(
-                'New',
-                'Delivered',
-                'Cancelled',
-                'Order Received',
-                'Preparing',
-                'On the Way',
-                'Pick-up Ready',
-                'Picked Up'
-            ),
-            defaultValue: 'New',
-            allowNull: false
-        },
-        created_at: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
-            allowNull: false
-        },
-        price: {
-            type: DataTypes.DECIMAL(10, 2),
-            allowNull: false
-        }
+const orderSchema = new mongoose.Schema({
+    restaurantId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Restaurant',
+        required: true
     },
-    {
-        sequelize,
-        modelName: 'Order',
-        tableName: 'orders',
-        timestamps: false
+    customerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Customer',
+        required: true
+    },
+    regularStatus:{
+        type: String,
+        enum:[
+            'New',
+            'Delivered',
+            'Cancelled',
+        ],
+        default: 'New',
+        required: true
+    },
+    deliveryStatus:{
+        type: String,
+        enum:[
+            'Order Received',
+            'Preparing',
+            'On the way',
+            'Pick-up Ready',
+            'Picked Up'
+        ],
+        default: 'Order Received',
+        required: true
+    },
+    price:{
+        type: Number,
+        required: true
     }
-    );
+}, {
+    timestamps: true
+});
 
-    Order.associate = (models) => {
-        Order.belongsTo(models.Restaurant, { foreignKey: 'restaurant_Id' });
-        Order.belongsTo(models.Customer, { foreignKey: 'customer_Id' });
-    };
+const Order = mongoose.model('Order', orderSchema);
 
-    return Order;
-};
+module.exports = Order;
