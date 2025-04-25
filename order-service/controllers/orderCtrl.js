@@ -85,7 +85,7 @@ exports.updateOrderStatus = async (req, res) => {
 
     try {
         const restaurantId = user.restaurantId;
-        const { status } = req.body;
+        const { deliveryStatus } = req.body;
         const updatedOrder = await Order.findOneAndUpdate(
             { _id: req.params.id, restaurantId },
             { deliveryStatus },
