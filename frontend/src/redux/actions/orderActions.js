@@ -17,8 +17,7 @@ export const getAllCustomerOrders = () => async (dispatch) => {
             payload: error.response?.data?.message || error.message,
         });
     }
-};        
-    
+};         
 
 export const getAllRestaurantOrders = () => async (dispatch) => {
     try {
