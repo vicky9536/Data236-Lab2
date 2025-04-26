@@ -20,6 +20,7 @@ import UpdateRestaurant from './components/Home/UpdateRestaurant';
 import EditDish from './components/Menu/EditDish';
 import AddDish from './components/Menu/AddDish';
 import OrderOnCustomer from './components/Order/OrderOnCustomer';
+import OrderDetailOnCustomer from './components/Order/OrderDetailOnCustomer';
 import OrderOnRestaurant from './components/Order/OrderOnRestaurant';
 import UpdateOrder from './components/Order/UpdateOrder';
 import ViewCusProfile from './components/Order/ViewCusProfile';
@@ -40,6 +41,7 @@ const App = () => {
         <Route path="/customer_dashboard/favorites" element={<Favorites />} />
         <Route path="/customer_dashboard/cart" element={<Cart />} />
         <Route path="/customer_dashboard/orders" element={<OrderOnCustomer />} />
+        <Route path="/customer_dashboard/orders/detail" element={<OrderDetailOnCustomer />} />
         <Route path="/restaurant_login" element={<RestaurantLogin />} />
         <Route path="/restaurant_register" element={<RestaurantSignup />} />
         <Route path="/restaurant_dashboard" element={<RestaurantDashboard />} />

@@ -1,113 +1,116 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getRestProfile, updateRestProfile } from '../../redux/actions/restProfileActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { Container, Row, Col, Card, Button, Toast, ToastContainer } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { getMyRestProfile } from '../../redux/actions/restProfileActions';
 import { fetchRestDishes } from '../../redux/actions/restaurantActions';
 import { deleteDish } from '../../redux/actions/dishActions';
-import { Card, Container, Row, Col, Button, Form } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import Layout from '../Layout/Layout';
 import './Home.css';
-import Layout from '../Layout/Layout'; // Layout Import for consistent navbar/sidebar
 
 const RestaurantDashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const restaurant_Id = useSelector((state) => state.restaurantLogin.restaurant.id);
+  const { restaurant } = useSelector((state) => state.getMyRestProfile);
+  const { dishesByRestaurant, loading, error } = useSelector((state) => state.restDishesList);
 
-  const { loading, dishesByRestaurant, error } = useSelector(
-    (state) => state.restDishesList
-  );
-  const dishes = dishesByRestaurant?.[restaurant_Id] || [];
+  const [toastVariant, setToastVariant] = useState('danger');
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const [refresh, setRefresh] = useState(false);
 
+  const dishes = restaurant ? (dishesByRestaurant?.[restaurant.id] || []) : [];
+
   useEffect(() => {
-    if (restaurant_Id) {
-      dispatch(fetchRestDishes(restaurant_Id));
-    }
-  }, [restaurant_Id, dispatch, refresh]);
+    dispatch(getMyRestProfile());
+  }, [dispatch, refresh]);
 
-  const restaurant = useSelector((state) => state.getRestProfile.restaurant);
-
-  console.log("dishes:", dishes);
   useEffect(() => {
-    if (restaurant_Id) {
-      dispatch(getRestProfile(restaurant_Id));
+    if (restaurant?.id) {
+      dispatch(fetchRestDishes(restaurant.id));
     }
-  }, [dispatch, restaurant_Id, refresh]);
-
-  // Ensure that hooks are called before the early return
-  if (!restaurant) {
-    return <div>Restaurant not found!</div>;
-  }
-
-  const { name, description, location, timings, image_url, contact_info } = restaurant;
-
-  const handleLogoutClick = async (e) => {
-    e.preventDefault();
-    navigate("/");
-  };
-
-  const handleEditProfileClick = async () => {
-    navigate(`/restaurant/edit_profile/${restaurant.id}`);
-  };
-
-  const handleViewOrderClick = async () => {
-    navigate("/restaurant/order");
-  };
+  }, [dispatch, restaurant?.id, refresh]);
 
   const handleEditDish = (dish) => {
     navigate(`/restaurant/edit_dish/${dish.id}`);
   };
 
-  const handleAddDish = async (restaurant_Id) => {
-    navigate(`/restaurant/add_dish/${restaurant_Id}`);
-  };
-
-  const handleDeleteDish = async (dishId, restaurant_Id) => {
-    console.log("Deleting dish with ID:", dishId);
+  const handleDeleteDish = async (dishId) => {
     try {
-      await dispatch(deleteDish(dishId, restaurant_Id));
-      console.log("Dish deleted successfully");
-      setRefresh(!refresh);
+      await dispatch(deleteDish(dishId, restaurant.id));
+      setToastMessage('Dish deleted successfully!');
+      setToastVariant('success');
+      setShowToast(true);
+      setRefresh((prev) => !prev);
     } catch (error) {
-      console.error("Error deleting dish:", error);
+      setToastMessage('Failed to delete dish!');
+      setToastVariant('danger');
+      setShowToast(true);
     }
   };
 
+  const handleEditProfile = () => {
+    navigate('/restaurant/profile/update');  
+  };
+
+  const handleAddDish = () => {
+    navigate('/restaurant/add_dish'); // Add dish page route
+  };
+
+  const toastContainerStyle = {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    zIndex: 1050,
+  };
+
+  if (!restaurant) {
+    return (
+      <Layout variant="restaurant_dashboard" isLoggedInDashboard={true}>
+        <div>Restaurant not found!</div>
+      </Layout>
+    );
+  }
+
+  const {
+    name,
+    description,
+    location,
+    timings,
+    image_url,
+    contact_info,
+  } = restaurant;
+
   return (
-    <Layout>
+    <Layout variant="restaurant_dashboard" isLoggedInDashboard={true}>
       <div className="restaurant-page">
-        {/* Restaurant Details Section */}
         <Container className="mt-5">
           <Row className="text-center">
             <Col>
-              <img src={image_url} alt={name} className="restaurant-image" />
+              <img src={image_url || '/images/default-restaurant.jpg'} alt={name} className="restaurant-image" />
             </Col>
           </Row>
 
           <Row className="text-center">
             <Col>
               <h2 className="restaurant-name">{name}</h2>
-              <p className="restaurant-description">
-                {description || 'No description available for this restaurant.'}
-              </p>
-              <p className="restaurant-location">
-                {location || 'No location available.'}
-              </p>
-              <p className="restaurant-timings">
-                {timings || 'No timings available.'}
-              </p>
-              <p className="restaurant-contact">
-                {contact_info || 'No contact information available.'}
-              </p>
+              <p className="restaurant-description">{description || 'No description available.'}</p>
+              <p className="restaurant-location">{location || 'No location available.'}</p>
+              <p className="restaurant-timings">{timings || 'No timings available.'}</p>
+              <p className="restaurant-contact">{contact_info || 'No contact info available.'}</p>
             </Col>
+          </Row>
+
+          {/* Edit Profile and Add Dish Buttons Positioned in the Middle */}
+          <Row className="text-center">
             <Col>
-              <Button
-                onClick={handleEditProfileClick}
-                variant="outline-primary"
-                className="w-100"
-              >
+              <Button variant="outline-primary" onClick={handleEditProfile}>
                 Edit Profile
+              </Button>
+              <Button variant="outline-success" onClick={handleAddDish} className="ms-3">
+                Add Dish
               </Button>
             </Col>
           </Row>
@@ -115,7 +118,6 @@ const RestaurantDashboard = () => {
           {loading && <p className="text-center text-primary">Loading...</p>}
           {error && <p className="text-center text-danger">{error}</p>}
 
-          {/* Restaurant Menu Section */}
           <Row className="mt-5">
             <Col>
               <h3 className="text-center">Menu</h3>
@@ -129,13 +131,13 @@ const RestaurantDashboard = () => {
                           <Card.Title>{dish.name}</Card.Title>
                           <Card.Text>{dish.description}</Card.Text>
                           <Card.Text>
-                            <strong>Price: </strong>${dish.price}
+                            <strong>Price:</strong> ${dish.price}
                           </Card.Text>
                           <div className="d-flex justify-content-between">
-                            <Button onClick={() => handleEditDish(dish)} variant="primary" className="me-2">
+                            <Button variant="outline-primary" onClick={() => handleEditDish(dish)}>
                               Edit
                             </Button>
-                            <Button onClick={() => handleDeleteDish(dish.id, restaurant.id)} variant="danger">
+                            <Button variant="outline-danger" onClick={() => handleDeleteDish(dish.id)}>
                               Delete
                             </Button>
                           </div>
@@ -145,22 +147,20 @@ const RestaurantDashboard = () => {
                   ))}
                 </Row>
               ) : (
-                <p className="text-center">No menu available for this restaurant.</p>
+                <p className="text-center">No dishes available for your restaurant.</p>
               )}
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <Button
-                onClick={() => handleAddDish(restaurant_Id)}
-                variant="primary"
-                className="add-dish-btn w-100 mt-4"
-              >
-                Add Dish
-              </Button>
-            </Col>
-          </Row>
         </Container>
+
+        <ToastContainer style={toastContainerStyle}>
+          <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide bg={toastVariant}>
+            <Toast.Header>
+              <strong className="me-auto">{toastVariant === 'success' ? 'Success' : 'Error'}</strong>
+            </Toast.Header>
+            <Toast.Body>{toastMessage}</Toast.Body>
+          </Toast>
+        </ToastContainer>
       </div>
     </Layout>
   );

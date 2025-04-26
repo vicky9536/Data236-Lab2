@@ -40,6 +40,21 @@ const Layout = ({ children, showButtons = true, isLoggedInDashboard = false, var
         </>
       );
     }
+    if (variant === "restaurant_dashboard") {
+      return (
+        <>
+          <li className="menu-item">
+            <a onClick={() => navigate('/restaurant_dashboard')}>Dashboard</a>
+          </li>
+          <li className="menu-item">
+            <a onClick={() => navigate('/restaurant/order')}>Orders</a>
+          </li>
+          <li className="menu-item">
+            <a onClick={handleLogoutClick}>Logout</a>
+          </li>
+        </>
+      );
+    }
   
     // Default: Home sidebar
     return (
