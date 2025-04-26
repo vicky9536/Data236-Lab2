@@ -1,5 +1,5 @@
 const Favorite = require('../models/favorite');
-const Restaurant = require('../models/restaurant');
+// const Restaurant = require('../models/restaurant');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose'); 
 
@@ -22,11 +22,12 @@ exports.getFavorites = async (req, res) => {
         const customerId = user.customerId;
 
         // Fetch favorites and populate the associated restaurant details
-        const favorites = await Favorite.find({ customerId })
-            .populate('restaurantId')  
-            .exec();
+        const favorites = await Favorite.find({ customerId }).exec();
 
-        res.json(favorites);
+        // Extract restaurantId
+        const restaurantIds = favorites.map(favorite => favorite.restaurantId);
+
+        res.json({ restaurantIds });
     } catch (error) {
         console.error("Error fetching favorites:", error);
         res.status(500).json({ error: error.message });
