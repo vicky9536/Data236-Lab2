@@ -1,7 +1,7 @@
-const { Cart } = require('../models');
-const { Customer } = require('../models');
-const { Dish } = require('../models');
-const { Order } = require('../models');
+const Cart = require('../models/cart');
+const Customer = require('../models/customer');
+const Dish = require('../models/dish');
+const Order = require('../models/order');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 

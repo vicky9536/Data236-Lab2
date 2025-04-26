@@ -1,4 +1,4 @@
-const { Dish } = require('../models');
+const Dish = require('../models/dish');
 const jwt = require('jsonwebtoken');
 
 const verifyToken = (req) => {

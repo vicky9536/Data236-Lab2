@@ -1,5 +1,5 @@
-const { Restaurant } = require('../models');
-const { Dish } = require('../models');
+const Restaurant = require('../models/restaurant');
+const Dish = require('../models/dish');
 
 // Get all restaurants
 exports.getAllRest = async (req, res) => {
