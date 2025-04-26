@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
-// const Consumer = require('../models/consumer');
-const { Customer } = require('../models');
+const Customer = require('../models/customer');
+// const { Customer } = require('../models');
 const jwt = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET;
 

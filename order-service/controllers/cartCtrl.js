@@ -1,7 +1,7 @@
-const { Cart } = require('../models');
-const { Customer } = require('../models');
-const { Dish } = require('../models');
-const { Order } = require('../models');
+const Cart = require('../models/cart');
+// const Customer = require('../models/customer');
+// const Dish = require('../models/dish');
+const Order = require('../models/order');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
@@ -22,10 +22,7 @@ exports.getCart = async (req, res) => {
     try {
         const user = verifyToken(req);
         const customerId = user.customerId;
-        const cartItems = await Cart.find({ customerId }).populate({
-            path: 'dishId',
-            select: 'name description price category'
-        });        
+        const cartItems = await Cart.find({ customerId }).exec();  
         res.status(200).json(cartItems);
     } catch (error) {
         console.error("Error fetching cart items:", error);
@@ -87,28 +84,25 @@ exports.checkout = async (req, res) => {
     try {
         const user = verifyToken(req);
         const customerId = user.customerId;
-        const cartItems = await Cart.find({ customerId }).populate('dishId');        
-        console.log("Cart Items - backend:", cartItems);
+        const { items, restaurantId } = req.body;
 
-        if (cartItems.length === 0) {
+        if (!items || items.length === 0) {
             return res.status(400).json({ error: "Cart is empty" });
         }
-        const orderItems = cartItems.map(item => ({
-            dishId: item.dishId._id,
-            name: item.dishId.name,
-            quantity: item.quantity,
-            price: item.dishId.price,
-        }));
-        const totalPrice = cartItems.reduce((total, item) => 
-            total + (item.dishId.price * item.quantity), 0);
 
+        // Calculate total price
+        const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        // Create a new order
         const order = await Order.create({
             customerId,
-            restaurantId: cartItems[0].restaurantId,
+            restaurantId,
             price: totalPrice,
-            status: 'New',
-            items: orderItems
+            regularStatus: 'New',
+            deliveryStatus: 'Order Received',
+            items: items
         });
+
         await Cart.deleteMany({ customerId });
 
         res.status(200).json(order);

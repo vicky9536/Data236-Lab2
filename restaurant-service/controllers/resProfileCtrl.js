@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models');
+const Restaurant = require('../models/restaurant');
 const jwt = require('jsonwebtoken');
 
 const verifyToken = (req) => {

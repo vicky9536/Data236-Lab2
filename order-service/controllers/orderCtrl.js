@@ -1,4 +1,4 @@
-const { Order } = require('../models');
+const Order = require('../models/order');
 const jwt = require('jsonwebtoken');
 
 const verifyToken = (req) => {
@@ -22,7 +22,7 @@ exports.getAllCustomerOrders = async (req, res) => {
 
     try {
         const customerId = user.customerId;
-        const orders = await Order.find({ customerId }).populate('restaurantId');
+        const orders = await Order.find({ customerId }).exec();
         res.status(200).json(orders);
     } catch (error) {
         console.error("Error fetching orders:", error);
@@ -38,7 +38,7 @@ exports.getAllRestaurantOrders = async (req, res) => {
     }
     try {
         const restaurantId = user.restaurantId;
-        const orders = await Order.find({ restaurantId }).populate('customerId');
+        const orders = await Order.find({ restaurantId }).exec();
         res.status(200).json(orders);
     } catch (error) {
         console.error("Error fetching orders:", error);
@@ -58,13 +58,14 @@ exports.createOrder = async (req, res) => {
 
     try {
         const customerId = user.customerId;
-        const { restaurantId, price } = req.body;
+        const { restaurantId, price, items } = req.body;
         const order = await Order.create({
             restaurantId,
             customerId,
             regularStatus: 'New',
             deliveryStatus: 'Order Received',
-            price
+            price,
+            items
         });
         res.status(201).json(order);
     } catch (error) {

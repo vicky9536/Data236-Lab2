@@ -1,6 +1,6 @@
 //const Restaurant = require('../models/restaurant');
 const bcrypt = require('bcryptjs');
-const { Restaurant } = require('../models');  
+const Restaurant = require('../models/restaurant');  
 const jwt = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET;
 
