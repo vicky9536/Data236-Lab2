@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: user-service:latest
+          ports:
+            - containerPort: 5001
+          env:
+            - name: MONGO_URI
+              value: "mongodb+srv://nairuiliu:018213234Sh12%4095@clusterlab2.o3pwqmp.mongodb.net/?retryWrites=true&w=majority&appName=ClusterLab2"
+            - name: JWT_SECRET
+              value: "your_jwt_secret_key"
