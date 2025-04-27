@@ -13,6 +13,10 @@ const orderSchema = new mongoose.Schema({
         ref: 'Customer',
         required: true
     },
+    customerName: {
+        type: String,
+        required: true
+    },
     regularStatus:{
         type: String,
         enum:[

@@ -17,6 +17,8 @@ const Order = () => {
     dispatch(getAllRestaurantOrders());
   }, [dispatch]);
 
+  console.log("Orders:", orders);
+
   const handleStatusFilterChange = (status) => {
     setStatusFilter(status);
   };
@@ -24,14 +26,12 @@ const Order = () => {
   const filteredOrders = Array.isArray(orders)
     ? statusFilter === 'All'
       ? orders
-      : orders.filter((order) => order.status === statusFilter)
+      : orders.filter((order) => order.regularStatus === statusFilter)
     : [];
 
   const handleEditOrder = (orderId) => {
     navigate(`/restaurant/order/edit_order/${orderId}`);
   };
-
-  console.log("Orders:", orders);
 
   return (
     <Layout variant="restaurant_dashboard" isLoggedInDashboard={true}>
@@ -46,19 +46,21 @@ const Order = () => {
           {/* Status Filter */}
           <Row className="justify-content-center mt-4">
             <Col md={4}>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="w-100">
-                  {statusFilter === 'All' ? 'All Statuses' : statusFilter}
-                </Dropdown.Toggle>
+              <div className="d-grid w-100">
+                <Dropdown>
+                  <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="w-100">
+                    {statusFilter === 'All' ? 'All Statuses' : statusFilter}
+                  </Dropdown.Toggle>
 
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => handleStatusFilterChange('All')}>All</Dropdown.Item>
-                  <Dropdown.Item onClick={() => handleStatusFilterChange('New')}>New</Dropdown.Item>
-                  <Dropdown.Item onClick={() => handleStatusFilterChange('Delivered')}>Delivered</Dropdown.Item>
-                  <Dropdown.Item onClick={() => handleStatusFilterChange('Cancelled')}>Cancelled</Dropdown.Item>
-                  {/* Add more statuses if needed */}
-                </Dropdown.Menu>
-              </Dropdown>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => handleStatusFilterChange('All')}>All</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleStatusFilterChange('New')}>New</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleStatusFilterChange('Delivered')}>Delivered</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleStatusFilterChange('Cancelled')}>Cancelled</Dropdown.Item>
+                    {/* Add more statuses if needed */}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
             </Col>
           </Row>
 
@@ -77,14 +79,24 @@ const Order = () => {
                 <Alert variant="info">No orders found for the selected status.</Alert>
               </Col>
             ) : (
-              filteredOrders.map((order) => (
+              filteredOrders.map((order, index) => (
                 <Col key={order._id} md={6} lg={4} className="mb-4">
                   <Card className="order-card shadow-sm">
                     <Card.Body className="text-center">
-                      <Card.Title className="order-card-title">Order #{order._id}</Card.Title>
-                      <Card.Text className="order-card-text">Status: {order.status}</Card.Text>
-                      <Card.Text className="order-card-text">Price: ${order.price}</Card.Text>
-                      <Card.Text className="order-card-text">Customer ID: {order.customerId}</Card.Text>
+      
+                      <Card.Title className="order-card-title">Order #{index + 1}</Card.Title>
+
+                      <Card.Text className="order-card-text">
+                        Status: {order.regularStatus || order.deliveryStatus}
+                      </Card.Text>
+
+                      <Card.Text className="order-card-text">
+                        Price: ${order.price}
+                      </Card.Text>
+
+                      <Card.Text className="order-card-text">
+                        Customer: {order.customerName || "Unknown"}
+                      </Card.Text>
 
                       <div className="d-flex justify-content-center gap-2 mt-3">
                         <Button

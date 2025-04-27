@@ -63,6 +63,7 @@ exports.createOrder = async (req, res) => {
         const order = await Order.create({
             restaurantId,
             customerId,
+            customerName: user.name,
             regularStatus: 'New',
             deliveryStatus: 'Order Received',
             price,
@@ -73,6 +74,7 @@ exports.createOrder = async (req, res) => {
         await sendOrderCreatedEvent({
             orderId: order._id,
             customerId,
+            customerName: user.name,
             restaurantId,
             price,
             items,

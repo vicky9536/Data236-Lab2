@@ -1,19 +1,152 @@
+/* General order page styling */
+.order-page {
+    padding: 20px;
+}
+
 .order-container {
     margin-right: 20px;
 }
 
-.card-order-text {
-    margin-bottom: 2px; 
-}
-
-.card-order-title {
-    margin-bottom: 15px; 
-}
-
-.match-label-style {
-    font-size: 1rem; 
+/* Title of the order page */
+.order-page-title {
+    font-size: 2rem;
     font-weight: bold;
-    color: #495057;  
-    margin-bottom: .5rem; 
-  }
-  
+    margin-bottom: 20px;
+}
+
+/* Center text for headings */
+.text-center {
+    text-align: center;
+}
+
+/* Styling for dropdown toggle button to keep it consistent */
+.dropdown-toggle {
+    width: 100%; /* Full width */
+    padding: 10px 15px; /* Adjust padding as necessary */
+    text-align: center; /* Center the text */
+    min-width: 150px; /* Prevent shrinking */
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    margin-top: 5px; /* Space between the button and dropdown */
+}
+
+/* Status filter dropdown container */
+.mt-4 {
+    margin-top: 1.5rem !important;
+}
+
+/* Card styling for each order */
+.order-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for each order card title */
+.card-order-title {
+    margin-bottom: 15px;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+/* Styling for the order card text */
+.card-order-text {
+    margin-bottom: 2px;
+}
+
+/* Styling for order card text (e.g., customer ID, price, status) */
+.card-body .card-text {
+    font-size: 1rem;
+    margin: 5px 0;
+}
+
+/* Match label style */
+.match-label-style {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* Button container for actions (view profile and edit order) */
+.d-flex {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.btn-view-profile,
+.btn-edit-order {
+    width: 100%;
+    max-width: 150px; /* Optional: controls button size */
+}
+
+/* Button styles */
+.btn-view-profile {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-edit-order {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Loading and error message styling */
+.text-primary {
+    color: #007bff;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+/* Styling for empty order state message */
+.alert-info {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Adjust container margins and paddings */
+.container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Grid styling */
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Media query for responsive design */
+@media (max-width: 768px) {
+    .order-page-title {
+        font-size: 1.5rem;
+    }
+
+    .btn-view-profile,
+    .btn-edit-order {
+        width: 100%;
+    }
+
+    .dropdown-toggle {
+        width: 100%;
+    }
+
+    .dropdown-menu {
+        width: 100%;
+    }
+}
