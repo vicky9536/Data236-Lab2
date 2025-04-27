@@ -24,6 +24,7 @@ export const getRestaurantOrdersReducer = (state = initialStateGet, action) => {
         case GET_RES_ORDER_REQUEST:
             return { loading: true, orders: [], error: null };
         case GET_RES_ORDER_SUCCESS:
+            console.log("data-reducer:",action.payload);
             return { loading: false, orders: action.payload, error: null };
         case GET_RES_ORDER_FAILURE:
             return { loading: false, orders: [], error: action.payload };

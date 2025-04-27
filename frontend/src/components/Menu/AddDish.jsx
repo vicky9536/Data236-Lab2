@@ -2,7 +2,6 @@
     import { Container, Row, Col, Button, Form } from 'react-bootstrap';
     import { useNavigate } from 'react-router-dom';
     import { useDispatch, useSelector } from 'react-redux';
-    import { fetchRestDishes } from '../../redux/actions/restaurantActions';
     import { createDish } from '../../redux/actions/dishActions';
     import Layout from '../Layout/Layout';
 
@@ -18,7 +17,6 @@
         });
 
         const { loading, dishes, error } = useSelector((state) => state.dishAdd);
-        const restaurant_Id = useSelector((state) => state.restaurantLogin.restaurant._id);
 
         const handleChange = (e) => {
             const { name, value } = e.target;
@@ -31,7 +29,6 @@
         const handleSubmit = async (e) => {
             e.preventDefault();
             dispatch(createDish(newData)); 
-            dispatch(fetchRestDishes(restaurant_Id));
             navigate('/restaurant_dashboard');
         };
 

@@ -17,12 +17,12 @@ const verifyToken = (req) => {
 // get all orders for a customer
 exports.getAllCustomerOrders = async (req, res) => {
     const user = verifyToken(req);
-    if (!user.customerId) {
+    if (!user.id) {
         return res.status(403).json({ error: "Forbidden: only customers can view orders" });
     }    
 
     try {
-        const customerId = user.customerId;
+        const customerId = user.id;
         const orders = await Order.find({ customerId }).exec();
         res.status(200).json(orders);
     } catch (error) {
@@ -34,11 +34,11 @@ exports.getAllCustomerOrders = async (req, res) => {
 // get all orders for a restaurant
 exports.getAllRestaurantOrders = async (req, res) => {
     const user = verifyToken(req);
-    if (!user.restaurantId) {
+    if (!user.id) {
         return res.status(403).json({ error: "Forbidden: only restaurants can view orders" });
     }
     try {
-        const restaurantId = user.restaurantId;
+        const restaurantId = user.id;
         const orders = await Order.find({ restaurantId }).exec();
         res.status(200).json(orders);
     } catch (error) {
@@ -53,12 +53,12 @@ exports.createOrder = async (req, res) => {
     //     return res.status(401).json({error: "Unauthorized"});
     // }
     const user = verifyToken(req);
-    if (!user.customerId) {
+    if (!user.id) {
         return res.status(403).json({ error: "Forbidden: only customers can place orders" });
     }    
 
     try {
-        const customerId = user.customerId;
+        const customerId = user.id;
         const { restaurantId, price, items } = req.body;
         const order = await Order.create({
             restaurantId,
@@ -93,12 +93,12 @@ exports.updateOrderStatus = async (req, res) => {
     //     return res.status(401).json({error: "Unauthorized"});
     // }
     const user = verifyToken(req);
-    if (!user.restaurantId) {
+    if (!user.id) {
         return res.status(403).json({ error: "Forbidden: only restaurants can update orders" });
     }    
 
     try {
-        const restaurantId = user.restaurantId;
+        const restaurantId = user.id;
         const { deliveryStatus } = req.body;
         const updatedOrder = await Order.findOneAndUpdate(
             { _id: req.params.id, restaurantId },

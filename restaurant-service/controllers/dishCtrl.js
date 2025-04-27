@@ -43,9 +43,10 @@ exports.createDish = async (req, res) => {
 exports.getOneDish = async (req, res) => {
     try {
         const user = verifyToken(req);
-        const restaurantId = user.restaurantId;
+        const restaurantId = user.id;
+        dishName = req.params.dishName;
         const dish = await Dish.findOne({
-            _id: mongoose.Types.ObjectId(req.params.dishId),
+            name: dishName,
             restaurantId: restaurantId
         });
 
@@ -68,7 +69,8 @@ exports.updateDish = async (req, res) => {
 
     try {
         const user = verifyToken(req);
-        const restaurantId = user.restaurantId;
+        const restaurantId = user.id;
+        const dishId = new mongoose.Types.ObjectId(req.params.id);
         const updatedDish = await Dish.findOneAndUpdate(
             { _id: req.params.id, restaurantId },
             req.body,
@@ -93,10 +95,10 @@ exports.deleteDish = async (req, res) => {
 
     try {
         const user = verifyToken(req);
-        const restaurantId = user.restaurantId;
+        const restaurantId = user.id;
         const deletedDish = await Dish.findOneAndDelete({
-            _id: req.params.id,
-            restaurantId: new mongoose.Types.ObjectId(restaurantId)
+            _id: new mongoose.Types.ObjectId(req.params.id),
+            restaurantId
         });
 
         if (!deletedDish) {

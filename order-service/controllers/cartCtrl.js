@@ -21,7 +21,7 @@ const verifyToken = (req) => {
 exports.getCart = async (req, res) => {
     try {
         const user = verifyToken(req);
-        const customerId = user.customerId;
+        const customerId = user.id;
         const cartItems = await Cart.find({ customerId }).exec();  
         res.status(200).json(cartItems);
     } catch (error) {
@@ -38,7 +38,7 @@ exports.addCart = async (req, res) => {
     try {
         const { dishId, quantity, restaurantId } = req.body;
         const user = verifyToken(req);
-        const customerId = user.customerId;
+        const customerId = user.id;
 
         const cartItem = await Cart.create({
             dishId: new mongoose.Types.ObjectId(dishId),
@@ -58,7 +58,7 @@ exports.deleteCart = async (req, res) => {
 
     try {
         const user = verifyToken(req);
-        const customerId = user.customerId;
+        const customerId = user.id;
 
         const deleted = await Cart.findOneAndDelete({
             _id: new mongoose.Types.ObjectId(req.params.id),
@@ -83,7 +83,7 @@ exports.checkout = async (req, res) => {
 
     try {
         const user = verifyToken(req);
-        const customerId = user.customerId;
+        const customerId = user.id;
         const { items, restaurantId } = req.body;
 
         if (!items || items.length === 0) {

@@ -7,11 +7,11 @@ const initialState = {loading:false, dish: null, error: null};
 export const dishAddReducer = (state = initialState, action) => {
     switch (action.type) {
         case CREATE_DISHES_REQUEST:
-            return { loading: true, dishes: null, error: null };
+            return { loading: true, dish: null, error: null };
         case CREATE_DISHES_SUCCESS:
-            return { loading: false, dishes: action.payload, error: null };
+            return { loading: false, dish: action.payload, error: null };
         case CREATE_DISHES_FAIL:
-            return { loading: false, dishes: null, error: action.payload };
+            return { loading: false, dish: null, error: action.payload };
         default:
             return state;
     }
@@ -45,15 +45,15 @@ export const dishUpdateReducer = (state = initialStateUpdate, action) => {
     }
 };
 
-const initialStateDelete = { loading: false, dishes: null, error: null };
+const initialStateDelete = { loading: false, dish: null, error: null };
 export const dishDeleteReducer = (state = initialStateDelete, action) => {
     switch (action.type) {
         case DELETE_DISHES_REQUEST:
-            return { loading: true, dishes: null, error: null };
+            return { loading: true, dish: null, error: null };
         case DELETE_DISHES_SUCCESS:
-            return { loading: false, dishes: action.payload, error: null };
+            return { loading: false, dish: action.payload, error: null };
         case DELETE_DISHES_FAIL:
-            return { loading: false, dishes: null, error: action.payload };
+            return { loading: false, dish: null, error: action.payload };
         default:
             return state;
     }

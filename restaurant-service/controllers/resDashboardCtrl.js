@@ -23,7 +23,7 @@ exports.getAllRest = async (req, res) => {
 // Get dishes for a specific restaurant
 exports.getDishes = async (req, res) => {
     try {
-        restaurantId = new mongoose.Types.ObjectId(req.params.id);
+        const restaurantId = new mongoose.Types.ObjectId(req.params.id);
         const restaurant = await Restaurant.findById(restaurantId)
             .select('name location description image_url timings')
             .populate({

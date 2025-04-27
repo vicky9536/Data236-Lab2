@@ -4,7 +4,7 @@ import { favoriteAddReducer, favoriteListReducer, favoriteRemoveReducer } from "
 import { customerLoginReducer, customerLogoutReducer, customerRegisterReducer } from "./authCusReducer";
 import { getCusProfileReducer, updateCusProfileReducer } from "./cusProfileReducer";
 import { getCartReducer, addCartReducer, deleteCartReducer } from "./cartReducer";
-import  { restaurantLoginReducer, restaurantLogoutReducer, restaurantRegisterReducer } from "./authRestReducer";
+import { restaurantLoginReducer, restaurantLogoutReducer, restaurantRegisterReducer } from "./authRestReducer";
 import { getRestProfileReducer, getMyRestProfileReducer, updateRestProfileReducer } from "./restProfileReducer";
 import { dishAddReducer, dishGetReducer, dishUpdateReducer, dishDeleteReducer } from "./dishReducer";
 import { getCustomerOrdersReducer, getRestaurantOrdersReducer, orderCreateReducer, orderUpdateReducer } from "./orderReducer";

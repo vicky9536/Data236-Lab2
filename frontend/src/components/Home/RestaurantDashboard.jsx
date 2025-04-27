@@ -4,7 +4,7 @@ import { Container, Row, Col, Card, Button, Toast, ToastContainer } from 'react-
 import { useNavigate } from 'react-router-dom';
 import { getMyRestProfile } from '../../redux/actions/restProfileActions';
 import { fetchRestDishes } from '../../redux/actions/restaurantActions';
-import { deleteDish } from '../../redux/actions/dishActions';
+import { deleteDish, getOneDish } from '../../redux/actions/dishActions';
 import Layout from '../Layout/Layout';
 import './Home.css';
 
@@ -38,7 +38,9 @@ const RestaurantDashboard = () => {
 
   const handleDeleteDish = async (dishId) => {
     try {
+      console.log('Deleting dish with ID:', dishId);
       await dispatch(deleteDish(dishId));
+      dispatch(fetchRestDishes(restaurant.id));
       setToastMessage('Dish deleted successfully!');
       setToastVariant('success');
       setShowToast(true);
@@ -137,7 +139,7 @@ const RestaurantDashboard = () => {
                             <Button variant="outline-primary" onClick={() => handleEditDish(dish)}>
                               Edit
                             </Button>
-                            <Button variant="outline-danger" onClick={() => handleDeleteDish(dish.id)}>
+                            <Button variant="outline-danger" onClick={() => handleDeleteDish(dish._id)}>
                               Delete
                             </Button>
                           </div>

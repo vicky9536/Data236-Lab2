@@ -19,7 +19,7 @@ const verifyToken = (req) => {
 exports.getFavorites = async (req, res) => {
     try {
         const user = verifyToken(req);
-        const customerId = user.customerId;
+        const customerId = user.id;
 
         // Fetch favorites and populate the associated restaurant details
         const favorites = await Favorite.find({ customerId }).exec();
@@ -38,7 +38,7 @@ exports.getFavorites = async (req, res) => {
 exports.addFavorite = async (req, res) => {
     try {
         const user = verifyToken(req);
-        const customerId = user.customerId;
+        const customerId = user.id;
         const favorite = await Favorite.create({
             customerId, restaurantId: req.body.restaurantId
         });
@@ -53,7 +53,7 @@ exports.addFavorite = async (req, res) => {
 exports.removeFavorite = async (req, res) => {
     try {
         const user = verifyToken(req);
-        const customerId = user.customerId;
+        const customerId = user.id;
 
         const favoriteId = req.params.id;
         const objectId = new mongoose.Types.ObjectId(favoriteId);

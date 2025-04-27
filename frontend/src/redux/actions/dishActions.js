@@ -21,10 +21,10 @@ export const createDish = (dishInput) => async (dispatch) => {
     }
 };
 
-export const getOneDish = (dishId) => async (dispatch) => {
+export const getOneDish = (dish_name) => async (dispatch) => {
     try {
         dispatch({ type: GET_ONE_DISH_REQUEST });
-        const { data } = await axios.get(`http://127.0.0.1:5002/api/dish/get/${dishId}`, {
+        const { data } = await axios.get(`http://127.0.0.1:5002/api/dish/get/${dish_name}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
         console.log("data-action:",data);
