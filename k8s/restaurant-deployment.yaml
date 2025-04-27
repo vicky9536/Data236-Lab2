@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: restaurant-service
-          image: restaurant-service:latest
+          image: nairui/restaurant-service:latest
           ports:
             - containerPort: 5002
           env:

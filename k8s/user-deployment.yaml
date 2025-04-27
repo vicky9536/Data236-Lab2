@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: user-service:latest
+          image: nairui/user-service:latest
           ports:
             - containerPort: 5001
           env:
