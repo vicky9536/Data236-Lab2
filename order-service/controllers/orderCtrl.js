@@ -1,6 +1,7 @@
 const Order = require('../models/order');
 const jwt = require('jsonwebtoken');
 const { sendOrderCreatedEvent } = require('../kafka/producer');
+const mongoose = require('mongoose');
 
 const verifyToken = (req) => {
     const authHeader = req.headers.authorization;

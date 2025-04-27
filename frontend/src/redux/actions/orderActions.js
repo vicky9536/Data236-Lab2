@@ -25,7 +25,6 @@ export const getAllRestaurantOrders = () => async (dispatch) => {
         const { data } = await axios.get(`http://127.0.0.1:5003/api/order/viewResOrder`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
-        console.log("data-action:",data);
         dispatch({ type: GET_RES_ORDER_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
