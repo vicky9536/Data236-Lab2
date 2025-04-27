@@ -87,9 +87,11 @@ const Order = () => {
                       <Card.Title className="order-card-title">Order #{index + 1}</Card.Title>
 
                       <Card.Text className="order-card-text">
-                        Status: {order.regularStatus || order.deliveryStatus}
+                        Status: {order.regularStatus || "Not specified"}
                       </Card.Text>
-
+                      <Card.Text className="order-card-text">
+                        Delivery Status: {order.deliveryStatus || "Not specified"}
+                      </Card.Text>
                       <Card.Text className="order-card-text">
                         Price: ${order.price}
                       </Card.Text>

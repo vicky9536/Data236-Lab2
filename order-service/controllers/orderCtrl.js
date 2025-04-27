@@ -101,9 +101,10 @@ exports.updateOrderStatus = async (req, res) => {
 
     try {
         const restaurantId = user.id;
+        const orderId = new mongoose.Types.ObjectId(req.params.id);
         const { deliveryStatus } = req.body;
         const updatedOrder = await Order.findOneAndUpdate(
-            { _id: req.params.id, restaurantId },
+            { _id: orderId, restaurantId },
             { deliveryStatus },
             { new: true }
         );
