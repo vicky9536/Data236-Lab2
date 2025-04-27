@@ -22,8 +22,7 @@ exports.getCart = async (req, res) => {
     try {
         const user = verifyToken(req);
         const customerId = user.customerId;
-        const cartItems = await Cart.find({ customerId }).exec(); 
-        console.log("Cart items:", cartItems); 
+        const cartItems = await Cart.find({ customerId }).exec();  
         res.status(200).json(cartItems);
     } catch (error) {
         console.error("Error fetching cart items:", error);
@@ -56,7 +55,6 @@ exports.addCart = async (req, res) => {
 
 // delete dish from cart
 exports.deleteCart = async (req, res) => {
-
     try {
         const user = verifyToken(req);
         const customerId = user.customerId;
@@ -78,23 +76,13 @@ exports.deleteCart = async (req, res) => {
 
 // checkout
 exports.checkout = async (req, res) => {
-    // if (!req.session.consumerId) {
-    //     return res.status(401).json({error: "Unauthorized"});
-    // }
-
     try {
         const user = verifyToken(req);
         const customerId = user.customerId;
-        const { items, restaurantId } = req.body;
-
-        if (!items || items.length === 0) {
+        const { cartItems, restaurantId, totalPrice } = req.body;
+        if (!cartItems || cartItems.length === 0) {
             return res.status(400).json({ error: "Cart is empty" });
         }
-
-        // Calculate total price
-        const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-        // Create a new order
         const order = await Order.create({
             customerId,
             restaurantId: new mongoose.Types.ObjectId(restaurantId),
@@ -102,9 +90,7 @@ exports.checkout = async (req, res) => {
             price: totalPrice,
             regularStatus: 'New',
             deliveryStatus: 'Order Received',
-            items: items
         });
-
         await Cart.deleteMany({ customerId });
 
         res.status(200).json(order);

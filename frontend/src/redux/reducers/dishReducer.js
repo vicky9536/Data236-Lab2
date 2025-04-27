@@ -1,5 +1,6 @@
 import { CREATE_DISHES_REQUEST, CREATE_DISHES_SUCCESS, CREATE_DISHES_FAIL,
     GET_ONE_DISH_REQUEST, GET_ONE_DISH_SUCCESS, GET_ONE_DISH_FAIL,
+    GET_DISH_DETAILS_REQUEST, GET_DISH_DETAILS_SUCCESS, GET_DISH_DETAILS_FAIL,
     UPDATE_DISHES_REQUEST, UPDATE_DISHES_SUCCESS, UPDATE_DISHES_FAIL,
     DELETE_DISHES_REQUEST, DELETE_DISHES_SUCCESS, DELETE_DISHES_FAIL} from '../constants/dishConstants';
 
@@ -30,6 +31,29 @@ export const dishGetReducer = (state = initialStateGet, action) => {
             return state;
     }
 };
+
+const initialStateDetails = { loading: false, dishes: {}, error: null };
+
+export const dishDetailsReducer = (state = initialStateDetails, action) => {
+    switch (action.type) {
+        case GET_DISH_DETAILS_REQUEST:
+            return { ...state, loading: true, error: null };
+        case GET_DISH_DETAILS_SUCCESS:
+            return { 
+                loading: false, 
+                dishes: { 
+                    ...state.dishes, 
+                    [action.payload._id]: action.payload 
+                }, 
+                error: null 
+            };
+        case GET_DISH_DETAILS_FAIL:
+            return { ...state, loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
 
 const initialStateUpdate = { loading: false, dish: null, error: null };
 export const dishUpdateReducer = (state = initialStateUpdate, action) => {

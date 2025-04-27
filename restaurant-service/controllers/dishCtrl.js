@@ -42,12 +42,9 @@ exports.createDish = async (req, res) => {
 // Get one dish
 exports.getOneDish = async (req, res) => {
     try {
-        const user = verifyToken(req);
-        const restaurantId = user.id;
-        dishName = req.params.dishName;
+        const dishId = new mongoose.Types.ObjectId(req.params.id);
         const dish = await Dish.findOne({
-            name: dishName,
-            restaurantId: restaurantId
+            _id: dishId,
         });
 
         if (!dish) {

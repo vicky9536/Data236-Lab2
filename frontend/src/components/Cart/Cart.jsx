@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Container, Row, Col, Card, Button, Toast, ToastContainer } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Toast, ToastContainer, Spinner } from 'react-bootstrap';
 import { getCart, deleteCart, checkout } from '../../redux/actions/cartActions';
+import { getDishDetails } from '../../redux/actions/dishActions';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../Layout/Layout';
 import './Cart.css';
@@ -15,33 +16,61 @@ const Cart = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [toastVariant, setToastVariant] = useState('success');
   const [showToast, setShowToast] = useState(false);
+  const [dishDetails, setDishDetails] = useState({}); 
 
   const cartList = useSelector((state) => state.cartList);
+  const dishDetailsState = useSelector((state) => state.dishDetails);
 
   useEffect(() => {
     dispatch(getCart());
   }, [dispatch, refresh]);
 
+  // Fetch dish details whenever cartList changes
   useEffect(() => {
-    if (cartList && cartList.cartItems) {
+    const fetchDishDetails = async () => {
+      if (cartList?.cartItems?.length > 0) {
+        const newDishDetails = {};
+        for (const item of cartList.cartItems) {
+          if (!dishDetails[item.dishId]) {
+            dispatch(getDishDetails(item.dishId));
+          }
+        }
+      }
+    };
+
+    fetchDishDetails();
+  }, [cartList, dispatch, dishDetails]);
+
+  // Calculate total price based on cart items and fetched dish details
+  useEffect(() => {
+    if (cartList?.cartItems?.length > 0) {
       let total = 0;
       cartList.cartItems.forEach(item => {
-        const price = parseFloat(item.dishId.price);
-        const quantity = item.quantity;
-        total += price * quantity;
+        const dish = dishDetailsState.dishes[item.dishId];
+        if (dish) {
+          total += parseFloat(dish.price) * item.quantity;
+        }
       });
       setTotalPrice(total);
     }
-  }, [cartList]);
+  }, [cartList, dishDetailsState]);
 
   const handleFinalizeOrder = async () => {
+    console.log("cartList:", cartList);
+    if (!cartList?.cartItems || cartList.cartItems.length === 0) {
+      setToastMessage('Your cart is empty. Cannot place order.');
+      setToastVariant('danger');
+      setShowToast(true);
+      return;
+    }
+
     try {
-      await dispatch(checkout());
-      await dispatch(getCart()); // Ensure the cart is reloaded after checkout
+      await dispatch(checkout(cartList.cartItems, cartList.cartItems[0].restaurantId, totalPrice));
+      await dispatch(getCart());
       setToastMessage('Your order has been placed successfully!');
       setToastVariant('success');
       setShowToast(true);
-      setRefresh(!refresh); // Trigger refresh for safety
+      setRefresh(prev => !prev);
     } catch (error) {
       console.error("Error checking out:", error);
       setToastMessage('There was an issue placing your order. Please try again.');
@@ -79,25 +108,35 @@ const Cart = () => {
               </div>
             </Col>
           ) : (
-            cartList?.cartItems?.map((item) => (
-              <Col key={item.id} md={4} className="mb-4">
-                <Card className="cart-item-card">
-                  <Card.Body className="text-center">
-                    <Card.Title>{item.dishId.name}</Card.Title>
-                    <Card.Text>Price: ${item.dishId.price}</Card.Text>
-                    <Card.Text>Quantity: {item.quantity}</Card.Text>
-                    <Button
-                      variant="danger"
-                      onClick={() => handleRemoveItem(item._id)}
-                      className="btn-remove-item"
-                      style={{ marginLeft: '5px' }}
-                    >
-                      Delete
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))
+            cartList?.cartItems?.map((item) => {
+              const dish = dishDetailsState.dishes[item.dishId]; 
+
+              return (
+                <Col key={item._id} md={4} className="mb-4">
+                  <Card className="cart-item-card">
+                    <Card.Body className="text-center">
+                      {dish ? (
+                        <>
+                          <Card.Title>{dish.name}</Card.Title>
+                          <Card.Text>Price: ${dish.price.toFixed(2)}</Card.Text>
+                          <Card.Text>Quantity: {item.quantity}</Card.Text>
+                          <Button
+                            variant="danger"
+                            onClick={() => handleRemoveItem(item._id)}
+                            className="btn-remove-item"
+                            style={{ marginLeft: '5px' }}
+                          >
+                            Delete
+                          </Button>
+                        </>
+                      ) : (
+                        <Spinner animation="border" size="sm" />
+                      )}
+                    </Card.Body>
+                  </Card>
+                </Col>
+              );
+            })
           )}
         </Row>
 
@@ -126,7 +165,7 @@ const Cart = () => {
         )}
       </div>
 
-      {/* Toast Container for success/error messages */}
+      {/* Toast Container */}
       <ToastContainer style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1050 }}>
         <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide bg={toastVariant}>
           <Toast.Header>

@@ -2,6 +2,7 @@ import axios from "axios";
 import {
     CREATE_DISHES_REQUEST, CREATE_DISHES_SUCCESS, CREATE_DISHES_FAIL,
     GET_ONE_DISH_REQUEST, GET_ONE_DISH_SUCCESS, GET_ONE_DISH_FAIL,
+    GET_DISH_DETAILS_REQUEST, GET_DISH_DETAILS_SUCCESS, GET_DISH_DETAILS_FAIL,
     UPDATE_DISHES_REQUEST, UPDATE_DISHES_SUCCESS, UPDATE_DISHES_FAIL,
     DELETE_DISHES_REQUEST, DELETE_DISHES_SUCCESS, DELETE_DISHES_FAIL } from "../constants/dishConstants";
 
@@ -21,17 +22,31 @@ export const createDish = (dishInput) => async (dispatch) => {
     }
 };
 
-export const getOneDish = (dish_name) => async (dispatch) => {
+export const getOneDish = (dishId) => async (dispatch) => {
     try {
         dispatch({ type: GET_ONE_DISH_REQUEST });
-        const { data } = await axios.get(`http://127.0.0.1:5002/api/dish/get/${dish_name}`, {
+        const { data } = await axios.get(`http://127.0.0.1:5002/api/dish/get/${dishId}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
-        console.log("data-action:",data);
         dispatch({ type: GET_ONE_DISH_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
             type: GET_ONE_DISH_FAIL,
+            payload: error.response?.data?.message || error.message,
+        });
+    }
+};
+
+export const getDishDetails = (dishId) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: GET_DISH_DETAILS_REQUEST });
+        const { data } = await axios.get(`http://127.0.0.1:5002/api/dish/get/${dishId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        dispatch({ type: GET_DISH_DETAILS_SUCCESS, payload: data });
+    } catch (error) {
+        dispatch({
+            type: GET_DISH_DETAILS_FAIL,
             payload: error.response?.data?.message || error.message,
         });
     }

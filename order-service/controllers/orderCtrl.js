@@ -18,7 +18,6 @@ const verifyToken = (req) => {
 // get all orders for a customer
 exports.getAllCustomerOrders = async (req, res) => {
     const user = verifyToken(req);
-    console.log(user.customerId);
     if (!user.customerId) {
         return res.status(403).json({ error: "Forbidden: only customers can view orders" });
     }    

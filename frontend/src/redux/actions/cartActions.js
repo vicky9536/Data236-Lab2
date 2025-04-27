@@ -40,10 +40,10 @@ export const deleteCart = (cart_id) => async (dispatch) => {
     }
   };
 
-  export const checkout = () => async (dispatch) => {
+  export const checkout = (cartItems, restaurantId, totalPrice) => async (dispatch) => {
     try {
       dispatch({ type: CHECKOUT_REQUEST });
-      const { data } = await axios.post(`http://127.0.0.1:5003/api/cart/checkout`, {}, {
+      const { data } = await axios.post(`http://127.0.0.1:5003/api/cart/checkout`, {cartItems,restaurantId, totalPrice}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
     });
       dispatch({ type: CHECKOUT_SUCCESS, payload: data });
