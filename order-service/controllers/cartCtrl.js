@@ -21,8 +21,9 @@ const verifyToken = (req) => {
 exports.getCart = async (req, res) => {
     try {
         const user = verifyToken(req);
-        const customerId = user.id;
-        const cartItems = await Cart.find({ customerId }).exec();  
+        const customerId = user.customerId;
+        const cartItems = await Cart.find({ customerId }).exec(); 
+        console.log("Cart items:", cartItems); 
         res.status(200).json(cartItems);
     } catch (error) {
         console.error("Error fetching cart items:", error);
@@ -38,13 +39,13 @@ exports.addCart = async (req, res) => {
     try {
         const { dishId, quantity, restaurantId } = req.body;
         const user = verifyToken(req);
-        const customerId = user.id;
+        const customerId = user.customerId;
 
         const cartItem = await Cart.create({
             dishId: new mongoose.Types.ObjectId(dishId),
             quantity,
             restaurantId: new mongoose.Types.ObjectId(restaurantId),
-            customerId: new mongoose.Types.ObjectId(customerId)
+            customerId: customerId
         });
         res.status(201).json(cartItem);
     } catch (error) {
@@ -58,7 +59,7 @@ exports.deleteCart = async (req, res) => {
 
     try {
         const user = verifyToken(req);
-        const customerId = user.id;
+        const customerId = user.customerId;
 
         const deleted = await Cart.findOneAndDelete({
             _id: new mongoose.Types.ObjectId(req.params.id),
@@ -83,7 +84,7 @@ exports.checkout = async (req, res) => {
 
     try {
         const user = verifyToken(req);
-        const customerId = user.id;
+        const customerId = user.customerId;
         const { items, restaurantId } = req.body;
 
         if (!items || items.length === 0) {

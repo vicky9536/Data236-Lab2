@@ -18,12 +18,13 @@ const verifyToken = (req) => {
 // get all orders for a customer
 exports.getAllCustomerOrders = async (req, res) => {
     const user = verifyToken(req);
-    if (!user.id) {
+    console.log(user.customerId);
+    if (!user.customerId) {
         return res.status(403).json({ error: "Forbidden: only customers can view orders" });
     }    
 
     try {
-        const customerId = user.id;
+        const customerId = user.customerId;
         const orders = await Order.find({ customerId }).exec();
         res.status(200).json(orders);
     } catch (error) {
@@ -54,12 +55,12 @@ exports.createOrder = async (req, res) => {
     //     return res.status(401).json({error: "Unauthorized"});
     // }
     const user = verifyToken(req);
-    if (!user.id) {
+    if (!user.customerId) {
         return res.status(403).json({ error: "Forbidden: only customers can place orders" });
     }    
 
     try {
-        const customerId = user.id;
+        const customerId = user.customerId;
         const { restaurantId, price, items } = req.body;
         const order = await Order.create({
             restaurantId,

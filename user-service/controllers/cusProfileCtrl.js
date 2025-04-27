@@ -18,7 +18,7 @@ const verifyToken = (req) => {
 exports.viewCusProfile = async (req, res) => {
     try {
         const user = verifyToken(req);
-        const customerId = user.id;
+        const customerId = user.customerId;
 
         const customer = await Customer.findById(customerId).select('-password');
         if (!customer) {
@@ -40,7 +40,7 @@ exports.updateCusProfile = async (req, res) => {
     // }
     try {
         const user = verifyToken(req); 
-        const customerId = user.id;
+        const customerId = user.customerId;
 
         const { name, email, state, country, description, profilePic } = req.body;
 
