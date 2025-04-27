@@ -13,6 +13,21 @@ const verifyToken = (req) => {
     return jwt.verify(token, process.env.JWT_SECRET);
 };
 
+exports.viewMyRestInfo = async (req, res) => {
+    try {
+        const user = verifyToken(req);
+        const restaurantId = user.id;
+        const restaurant = await Restaurant.findById(restaurantId);
+        if (!restaurant) {
+            return res.status(404).json({error: "Restaurant not found"});
+        }
+        res.status(200).json(restaurant);
+    } catch (error) {
+        console.error("Error fetching restaurant info:", error);
+        res.status(500).json({error: error.message});
+    }
+};
+
 // View restaurant info
 exports.viewRestInfo = async (req, res) => {
     try {

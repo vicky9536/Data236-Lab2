@@ -5,7 +5,7 @@ import { REST_DISHES_LIST_REQUEST, REST_DISHES_LIST_SUCCESS, REST_DISHES_LIST_FA
 export const fetchRestaurants = () => async (dispatch) => {
     try {
         dispatch({ type: RESTAURANT_LIST_REQUEST });
-        const { data } = await axios.get("http://127.0.0.1:8383/resDb/restaurants");
+        const { data } = await axios.get("http://127.0.0.1:5002/api/dashboard/restaurants");
         dispatch({ type: RESTAURANT_LIST_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -18,7 +18,7 @@ export const fetchRestaurants = () => async (dispatch) => {
 export const fetchRestDishes = (restaurantId) => async (dispatch) => {
     try {
         dispatch({ type: REST_DISHES_LIST_REQUEST });
-        const { data } = await axios.get(`http://127.0.0.1:8383/resDb/restaurants/${restaurantId}/dishes`);
+        const { data } = await axios.get(`http://127.0.0.1:5002/api/dashboard/restaurants/${restaurantId}/dishes`);
         dispatch({
             type: REST_DISHES_LIST_SUCCESS,
             payload: { 

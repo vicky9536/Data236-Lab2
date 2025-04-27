@@ -7,7 +7,7 @@ export const getCusProfile = () => async (dispatch) => {
     try {
         dispatch({ type: GET_CUS_PROFILE_REQUEST });
 
-        const { data } = await axios.get(`http://127.0.0.1:8383/cusProfile/viewCus/me`, {
+        const { data } = await axios.get(`http://127.0.0.1:5001/api/profile/viewCus/me`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
 
@@ -26,7 +26,7 @@ export const updateCusProfile = (updatedProfile) => async (dispatch) => {
         console.log("Updating profile with:", updatedProfile);
         dispatch({ type: UPDATE_CUS_PROFILE_REQUEST });
 
-        const { data } = await axios.put(`http://127.0.0.1:8383/cusProfile/updateCus/me`, updatedProfile, {
+        const { data } = await axios.put(`http://127.0.0.1:5001/api/profile/updateCus/me`, updatedProfile, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
 

@@ -1,5 +1,6 @@
 const Dish = require('../models/dish');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const verifyToken = (req) => {
     const authHeader = req.headers.authorization;
@@ -21,14 +22,15 @@ exports.createDish = async (req, res) => {
 
     try {
         const user = verifyToken(req);
-        const restaurantId = user.restaurantId;
+        const restaurantId = user.id;
+        console.log("restaurantId:", restaurantId);
         const { name, description, price, category } = req.body;
         const dish = await Dish.create({
             name,
             description,
             price,
             category,
-            restaurantId
+            restaurantId: new mongoose.Types.ObjectId(restaurantId)
         });
         res.status(201).json(dish);
     } catch (error) {
@@ -36,6 +38,27 @@ exports.createDish = async (req, res) => {
         res.status(500).json({error: error.message});
     }
 };
+
+// Get one dish
+exports.getOneDish = async (req, res) => {
+    try {
+        const user = verifyToken(req);
+        const restaurantId = user.restaurantId;
+        const dish = await Dish.findOne({
+            _id: mongoose.Types.ObjectId(req.params.dishId),
+            restaurantId: restaurantId
+        });
+
+        if (!dish) {
+            return res.status(404).json({ error: "Dish not found" });
+        }
+        res.status(200).json(dish);
+    } catch (error) {
+        console.error("Error fetching dish:", error);
+        res.status(500).json({error: error.message});
+    }
+};
+
 
 // Update dish
 exports.updateDish = async (req, res) => {
@@ -73,7 +96,7 @@ exports.deleteDish = async (req, res) => {
         const restaurantId = user.restaurantId;
         const deletedDish = await Dish.findOneAndDelete({
             _id: req.params.id,
-            restaurantId
+            restaurantId: new mongoose.Types.ObjectId(restaurantId)
         });
 
         if (!deletedDish) {

@@ -96,7 +96,7 @@ exports.checkout = async (req, res) => {
         // Create a new order
         const order = await Order.create({
             customerId,
-            restaurantId,
+            restaurantId: new mongoose.Types.ObjectId(restaurantId),
             price: totalPrice,
             regularStatus: 'New',
             deliveryStatus: 'Order Received',

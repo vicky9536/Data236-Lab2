@@ -10,7 +10,7 @@ export const loginCustomer = (email, password) => async (dispatch) => {
     dispatch({ type: CUSTOMER_LOGIN_REQUEST });
 
     const { data } = await axios.post(
-      'http://127.0.0.1:8383/authC/customer/login',
+      'http://127.0.0.1:5001/api/auth/customer/login',
       { email, password },
       { withCredentials: true,
         headers: { 'Content-Type': 'application/json' }
@@ -35,7 +35,7 @@ export const logoutCustomer = () => async (dispatch) => {
     dispatch({ type: CUSTOMER_LOGOUT_REQUEST });
 
     await axios.post(
-      'http://127.0.0.1:8383/authC/customer/logout',
+      'http://127.0.0.1:5001/api/auth/customer/logout',
       {},
       { withCredentials: true }
     );
@@ -57,7 +57,7 @@ export const registerCustomer = (name, email, password) => async (dispatch) => {
     dispatch({ type: CUSTOMER_REGISTER_REQUEST });
 
     const { data } = await axios.post(
-      'http://127.0.0.1:8383/authC/customer/signup',
+      'http://127.0.0.1:5001/api/auth/customer/signup',
       { name, email, password },
       { withCredentials: true }
     );

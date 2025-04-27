@@ -1,5 +1,6 @@
 const Restaurant = require('../models/restaurant');
 const Dish = require('../models/dish');
+const mongoose = require('mongoose');
 
 // Get all restaurants
 exports.getAllRest = async (req, res) => {
@@ -22,7 +23,8 @@ exports.getAllRest = async (req, res) => {
 // Get dishes for a specific restaurant
 exports.getDishes = async (req, res) => {
     try {
-        const restaurant = await Restaurant.findById(req.params.id)
+        restaurantId = new mongoose.Types.ObjectId(req.params.id);
+        const restaurant = await Restaurant.findById(restaurantId)
             .select('name location description image_url timings')
             .populate({
                 path: 'dishes',

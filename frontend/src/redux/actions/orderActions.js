@@ -7,7 +7,7 @@ import { GET_CUS_ORDER_REQUEST, GET_CUS_ORDER_SUCCESS, GET_CUS_ORDER_FAILURE,
 export const getAllCustomerOrders = () => async (dispatch) => {
     try {
         dispatch({ type: GET_CUS_ORDER_REQUEST });
-        const { data } = await axios.get(`http://127.0.0.1:8383/orders/viewCusOrder`, {
+        const { data } = await axios.get(`http://127.0.0.1:5003/api/order/viewCusOrder`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
         dispatch({ type: GET_CUS_ORDER_SUCCESS, payload: data });
@@ -22,7 +22,7 @@ export const getAllCustomerOrders = () => async (dispatch) => {
 export const getAllRestaurantOrders = () => async (dispatch) => {
     try {
         dispatch({ type: GET_RES_ORDER_REQUEST });
-        const { data } = await axios.get(`http://127.0.0.1:8383/orders/viewResOrder`, {
+        const { data } = await axios.get(`http://127.0.0.1:5003/api/order/viewResOrder`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
         dispatch({ type: GET_RES_ORDER_SUCCESS, payload: data });
@@ -34,10 +34,12 @@ export const getAllRestaurantOrders = () => async (dispatch) => {
     }
 };
 
-export const createOrder = (customer_Id, orderInput) => async (dispatch) => {
+export const createOrder = (orderInput) => async (dispatch) => {
     try {
         dispatch({ type: CREATE_ORDER_REQUEST });
-        const { data } = await axios.post(`http://127.0.0.1:8383/orders/create/${customer_Id}`, orderInput);
+        const { data } = await axios.post(`http://127.0.0.1:5003/api/order/create`, orderInput, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+        });
         dispatch({ type: CREATE_ORDER_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -50,7 +52,7 @@ export const createOrder = (customer_Id, orderInput) => async (dispatch) => {
 export const updateOrder = (order_Id, restaurant_Id, orderInput) => async (dispatch) => {
     try {
         dispatch({ type: UPDATE_ORDER_REQUEST });
-        const { data } = await axios.put(`http://127.0.0.1:8383/orders/update/${restaurant_Id}/${order_Id}`, orderInput);
+        const { data } = await axios.put(`http://127.0.0.1:5003/api/order/update/${restaurant_Id}/${order_Id}`, orderInput);
         dispatch({ type: UPDATE_ORDER_SUCCESS, payload: data });
     } catch (error) {
         dispatch({

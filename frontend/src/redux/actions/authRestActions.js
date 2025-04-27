@@ -8,7 +8,7 @@ export const loginRestaurant = (email, password) => async (dispatch) => {
   try {
     dispatch({ type: RESTAURANT_LOGIN_REQUEST });
     const { data } = await axios.post(
-      'http://127.0.0.1:8383/authR/restaurant/login',
+      'http://127.0.0.1:5002/api/auth/restaurant/login',
       { email, password },
       { withCredentials: true }
     );
@@ -34,7 +34,7 @@ export const logoutRestaurant = () => async (dispatch) => {
 
     // Optionally, make an API call to inform the server of logout
     const response = await axios.post(
-      'http://127.0.0.1:8383/authR/restaurant/logout',
+      'http://127.0.0.1:5002/api/auth/restaurant/logout',
       {},
       { withCredentials: true }
     );
@@ -59,7 +59,7 @@ export const registerRestaurant = (name, email, password, location) => async (di
   try {
     dispatch({ type: RESTAURANT_REGISTER_REQUEST });
 
-    const { data } = await axios.post('http://127.0.0.1:8383/authR/restaurant/signup', { name, email, password, location });
+    const { data } = await axios.post('http://127.0.0.1:5002/api/auth/restaurant/signup', { name, email, password, location });
     console.log("Response from server:", data);
     dispatch({ type: RESTAURANT_REGISTER_SUCCESS, payload: data });
   } catch (error) {

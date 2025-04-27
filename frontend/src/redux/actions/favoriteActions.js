@@ -8,7 +8,7 @@ export const getFavorites = () => async (dispatch) => {
     try {
       dispatch({ type: FAVORITE_LIST_REQUEST });
   
-      const { data: favoriteData } = await axios.get('http://127.0.0.1:8383/favorites/getFavorites', {
+      const { data: favoriteData } = await axios.get('http://127.0.0.1:5001/api/favorites/getFavorites', {
         headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
       });
       dispatch({ type: FAVORITE_LIST_SUCCESS, payload: favoriteData });
@@ -25,7 +25,7 @@ export const getFavorites = () => async (dispatch) => {
 export const addFavorite = (restInput) => async (dispatch) => {
     try {
         dispatch({ type: FAVORITE_ADD_REQUEST });
-        const { data } = await axios.post('http://127.0.0.1:8383/favorites/addFavorite', 
+        const { data } = await axios.post('http://127.0.0.1:5001/api/favorites/addFavorite', 
             { restaurantId: restInput.restaurantId }, 
             {
                 headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
@@ -44,7 +44,7 @@ export const addFavorite = (restInput) => async (dispatch) => {
 export const removeFavorite = (favorite_Id) => async (dispatch) => {
     try {
         dispatch({ type: FAVORITE_REMOVE_REQUEST });
-        const { data } = await axios.delete(`http://127.0.0.1:8383/favorites/removeFavorite/${favorite_Id}`, {
+        const { data } = await axios.delete(`http://127.0.0.1:5001/api/favorites/removeFavorite/${favorite_Id}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
         dispatch({ type: FAVORITE_REMOVE_SUCCESS, payload: data });

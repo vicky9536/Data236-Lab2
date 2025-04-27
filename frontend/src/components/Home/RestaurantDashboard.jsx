@@ -33,12 +33,12 @@ const RestaurantDashboard = () => {
   }, [dispatch, restaurant?.id, refresh]);
 
   const handleEditDish = (dish) => {
-    navigate(`/restaurant/edit_dish/${dish.id}`);
+    navigate(`/restaurant/edit_dish/${dish.name}`);
   };
 
   const handleDeleteDish = async (dishId) => {
     try {
-      await dispatch(deleteDish(dishId, restaurant.id));
+      await dispatch(deleteDish(dishId));
       setToastMessage('Dish deleted successfully!');
       setToastVariant('success');
       setShowToast(true);
