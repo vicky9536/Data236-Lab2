@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { runConsumer } = require('./kafka/consumer');
 
 const restaurantAuthRoutes = require('./routes/restaurantAuthRoutes');
 const dishRoutes = require('./routes/dishRoutes');
@@ -21,6 +22,9 @@ app.use('/api/auth', restaurantAuthRoutes);
 app.use('/api/dish', dishRoutes);
 app.use('/api/dashboard', resDbRoutes);
 app.use('/api/profile', resProfileRoutes);
+
+// Run Kafka consumer
+runConsumer().catch(console.error);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {

@@ -1,5 +1,6 @@
 const Order = require('../models/order');
 const jwt = require('jsonwebtoken');
+const { sendOrderCreatedEvent } = require('../kafka/producer');
 
 const verifyToken = (req) => {
     const authHeader = req.headers.authorization;
@@ -67,6 +68,18 @@ exports.createOrder = async (req, res) => {
             price,
             items
         });
+        
+        // Send order created event to Kafka
+        await sendOrderCreatedEvent({
+            orderId: order._id,
+            customerId,
+            restaurantId,
+            price,
+            items,
+            regularStatus: order.regularStatus,
+            deliveryStatus: order.deliveryStatus,
+        });
+
         res.status(201).json(order);
     } catch (error) {
         console.error("Error creating order:", error);
