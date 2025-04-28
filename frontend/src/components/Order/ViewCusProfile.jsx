@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getOrderById } from '../../redux/actions/orderActions';
 import { getCusProfileOrder } from '../../redux/actions/cusProfileActions';
 import Layout from '../Layout/Layout';
-import '../Profile/CustomerProfile.css'; // reuse same css
+import '../Profile/CustomerProfile.css';
 
 const ViewCusProfile = () => {
     const { order_Id } = useParams();

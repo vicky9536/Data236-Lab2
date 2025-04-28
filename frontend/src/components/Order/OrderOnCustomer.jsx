@@ -1,17 +1,24 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Button, Spinner } from 'react-bootstrap';
 import { getAllCustomerOrders } from '../../redux/actions/orderActions';
 import Layout from '../Layout/Layout';
 
 const OrderOnCustomer = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { loading, orders, error } = useSelector((state) => state.getCusOrder) || { orders: [] };
 
   useEffect(() => {
     dispatch(getAllCustomerOrders());
   }, [dispatch]);
+
+
+  const handleViewOrderDetails = (orderId) => {
+    navigate(`/customer_dashboard/orders/${orderId}`);
+  };
 
   return (
     <Layout variant="dashboard" isLoggedInDashboard={true}>
@@ -56,15 +63,14 @@ const OrderOnCustomer = () => {
                       <Card.Body>
                         <Card.Title>Order #{index + 1}</Card.Title>
                         <Card.Text>Date: {new Date(order.createdAt).toLocaleDateString()}</Card.Text>
+                        <Card.Text>Status: {order.regularStatus}</Card.Text>
                         <Card.Text>Total Price: ${order.price.toFixed(2)}</Card.Text>
 
                         {/* View Order Details Button centered */}
                         <div className="d-flex justify-content-center">
                           <Button
                             variant="primary"
-                            onClick={() => {
-                              // Optional: Navigate to detailed order page or open modal
-                            }}
+                            onClick={() => handleViewOrderDetails(order._id)}
                             className="mt-2"
                           >
                             View Details

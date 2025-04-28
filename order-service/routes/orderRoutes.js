@@ -7,5 +7,6 @@ router.get('/viewCusOrder', orderCtrl.getAllCustomerOrders);
 router.get('/:id', orderCtrl.getOrderById);
 router.post('/create', orderCtrl.createOrder);
 router.put('/update/:id', orderCtrl.updateOrderStatus);
+router.put('/cancel/:id', orderCtrl.cancelOrder);
 
 module.exports = router;

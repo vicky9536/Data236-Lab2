@@ -35,7 +35,8 @@ const orderSchema = new mongoose.Schema({
             'On the way',
             'Pick-up Ready',
             'Picked Up',
-            'Delivered'
+            'Delivered',
+            'Cancelled',
         ],
         default: 'Order Received',
         required: true

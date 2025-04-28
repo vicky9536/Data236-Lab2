@@ -51,7 +51,7 @@ exports.getAllRestaurantOrders = async (req, res) => {
 // get order by id
 exports.getOrderById = async (req, res) => {
     const user = verifyToken(req);
-    if (!user.id) {
+    if (!user.id && !user.customerId) {
         return res.status(403).json({ error: "Forbidden: only restaurants can view orders" });
     }
 
@@ -142,6 +142,31 @@ exports.updateOrderStatus = async (req, res) => {
         res.status(200).json(updatedOrder);    
     } catch (error) {
         console.error("Error updating order status:", error);
+        res.status(500).json({error: error.message});
+    }
+};
+
+// cancel order
+exports.cancelOrder = async (req, res) => {
+    const user = verifyToken(req);
+    if (!user.customerId) {
+        return res.status(403).json({ error: "Forbidden: only customers can cancel orders" });
+    }
+    try {
+        const customerId = user.customerId;
+        const orderId = new mongoose.Types.ObjectId(req.params.id);
+        const cancelOrder = await Order.findOneAndUpdate(
+            { _id: orderId, customerId },
+            { regularStatus: 'Cancelled', deliveryStatus: 'Cancelled' },
+            { new: true }
+        );
+        if (!cancelOrder) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+        console.log("order cancelled:", cancelOrder);
+        res.status(200).json(cancelOrder);
+    } catch (error) {
+        console.error("Error cancelling order:", error);
         res.status(500).json({error: error.message});
     }
 };

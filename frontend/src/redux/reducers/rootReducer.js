@@ -7,7 +7,8 @@ import { getCartReducer, addCartReducer, deleteCartReducer } from "./cartReducer
 import { restaurantLoginReducer, restaurantLogoutReducer, restaurantRegisterReducer } from "./authRestReducer";
 import { getRestProfileReducer, getMyRestProfileReducer, updateRestProfileReducer, getFavoriteRestProfileReducer } from "./restProfileReducer";
 import { dishAddReducer, dishGetReducer, dishDetailsReducer, dishUpdateReducer, dishDeleteReducer } from "./dishReducer";
-import { getCustomerOrdersReducer, getRestaurantOrdersReducer, orderCreateReducer, orderUpdateReducer, getOrderByIdReducer } from "./orderReducer";
+import { getCustomerOrdersReducer, getRestaurantOrdersReducer, orderCreateReducer, 
+    orderUpdateReducer, getOrderByIdReducer, orderCancelReducer } from "./orderReducer";
 
 const rootReducer = combineReducers({
     restaurantList: restaurantListReducer,
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
     getOrderById: getOrderByIdReducer,
     orderCreate: orderCreateReducer,
     orderUpdate: orderUpdateReducer,
+    orderCancel: orderCancelReducer
 });
 
 export default rootReducer;
