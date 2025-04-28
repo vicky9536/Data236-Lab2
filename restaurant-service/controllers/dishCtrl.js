@@ -42,10 +42,12 @@ exports.createDish = async (req, res) => {
 // Get one dish
 exports.getOneDish = async (req, res) => {
     try {
-        const dishId = new mongoose.Types.ObjectId(req.params.id);
-        const dish = await Dish.findOne({
-            _id: dishId,
-        });
+        const dish = await Dish.findById(req.params.id);
+
+        // const dishId = new mongoose.Types.ObjectId(req.params.id);
+        // const dish = await Dish.findOne({
+        //     _id: dishId,
+        // });
 
         if (!dish) {
             return res.status(404).json({ error: "Dish not found" });
