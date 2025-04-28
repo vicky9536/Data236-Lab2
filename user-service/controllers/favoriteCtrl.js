@@ -57,8 +57,7 @@ exports.removeFavorite = async (req, res) => {
 
         // Try to delete the favorite by _id and customerId
         const deletedFavorite = await Favorite.findOneAndDelete({
-            _id: objectId,
-            customerId
+            _id: objectId
         });
 
         if (deletedFavorite) {

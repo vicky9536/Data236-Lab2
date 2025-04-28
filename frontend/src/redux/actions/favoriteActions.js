@@ -43,10 +43,10 @@ export const addFavorite = (restInput) => async (dispatch) => {
 export const removeFavorite = (favorite_Id) => async (dispatch) => {
     try {
         dispatch({ type: FAVORITE_REMOVE_REQUEST });
-        const { data } = await axios.delete(`http://127.0.0.1:5001/api/favorites/removeFavorite/${favorite_Id}`, {
+        await axios.delete(`http://127.0.0.1:5001/api/favorites/removeFavorite/${favorite_Id}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
-        dispatch({ type: FAVORITE_REMOVE_SUCCESS, payload: data });
+        dispatch({ type: FAVORITE_REMOVE_SUCCESS, payload: favorite_Id });
     } catch (error) {
         dispatch({
             type: FAVORITE_REMOVE_FAIL,

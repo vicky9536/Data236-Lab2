@@ -49,6 +49,7 @@ const FavoriteRestaurants = () => {
 
   const handleRemoveFavorite = (restaurantId) => {
     dispatch(removeFavorite(restaurantId));
+    dispatch(getFavorites());
     setToastMessage('Restaurant removed from favorites');
     setToastVariant('success');
     setShowToast(true);
@@ -110,7 +111,7 @@ const FavoriteRestaurants = () => {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation(); // Prevent card click
-                          handleRemoveFavorite(restaurant.restaurantId);
+                          handleRemoveFavorite(restaurant._id);
                         }}
                       >
                         Remove
