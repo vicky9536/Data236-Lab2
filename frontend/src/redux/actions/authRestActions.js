@@ -4,11 +4,15 @@ import { RESTAURANT_LOGIN_REQUEST, RESTAURANT_LOGIN_SUCCESS, RESTAURANT_LOGIN_FA
   RESTAURANT_REGISTER_REQUEST, RESTAURANT_REGISTER_SUCCESS, RESTAURANT_REGISTER_FAIL,
 } from "../constants/authRestConstants";
 
+const USER_SERVICE_URL = process.env.REACT_APP_USER_SERVICE_URL;
+const ORDER_SERVICE_URL = process.env.REACT_APP_ORDER_SERVICE_URL;
+const RESTAURANT_SERVICE_URL = process.env.REACT_APP_RESTAURANT_SERVICE_URL;
+
 export const loginRestaurant = (email, password) => async (dispatch) => {
   try {
     dispatch({ type: RESTAURANT_LOGIN_REQUEST });
     const { data } = await axios.post(
-      'http://127.0.0.1:5002/api/auth/restaurant/login',
+      `${RESTAURANT_SERVICE_URL}/api/auth/restaurant/login`,
       { email, password },
       { withCredentials: true }
     );
@@ -34,7 +38,7 @@ export const logoutRestaurant = () => async (dispatch) => {
 
     // Optionally, make an API call to inform the server of logout
     const response = await axios.post(
-      'http://127.0.0.1:5002/api/auth/restaurant/logout',
+      `${RESTAURANT_SERVICE_URL}/api/auth/restaurant/logout`,
       {},
       { withCredentials: true }
     );
@@ -59,7 +63,7 @@ export const registerRestaurant = (name, email, password, location) => async (di
   try {
     dispatch({ type: RESTAURANT_REGISTER_REQUEST });
 
-    const { data } = await axios.post('http://127.0.0.1:5002/api/auth/restaurant/signup', { name, email, password, location });
+    const { data } = await axios.post(`${RESTAURANT_SERVICE_URL}/api/auth/restaurant/signup`, { name, email, password, location });
     console.log("Response from server:", data);
     dispatch({ type: RESTAURANT_REGISTER_SUCCESS, payload: data });
   } catch (error) {

@@ -3,14 +3,19 @@ import { CUSTOMER_LOGIN_REQUEST, CUSTOMER_LOGIN_SUCCESS, CUSTOMER_LOGIN_FAIL,
   CUSTOMER_LOGOUT_REQUEST, CUSTOMER_LOGOUT_SUCCESS, CUSTOMER_LOGOUT_FAIL,
   CUSTOMER_REGISTER_REQUEST,CUSTOMER_REGISTER_SUCCESS, CUSTOMER_REGISTER_FAIL,
 } from "../constants/authCusConstants";
+const USER_SERVICE_URL = process.env.REACT_APP_USER_SERVICE_URL;
+const ORDER_SERVICE_URL = process.env.REACT_APP_ORDER_SERVICE_URL;
+const RESTAURANT_SERVICE_URL = process.env.REACT_APP_RESTAURANT_SERVICE_URL;
+
 
 // Customer Login
 export const loginCustomer = (email, password) => async (dispatch) => {
   try {
     dispatch({ type: CUSTOMER_LOGIN_REQUEST });
+    console.log(`${USER_SERVICE_URL}/api/auth/customer/login`);
 
     const { data } = await axios.post(
-      'http://127.0.0.1:5001/api/auth/customer/login',
+      `${USER_SERVICE_URL}/api/auth/customer/login`,
       { email, password },
       { withCredentials: true,
         headers: { 'Content-Type': 'application/json' }
@@ -35,7 +40,7 @@ export const logoutCustomer = () => async (dispatch) => {
     dispatch({ type: CUSTOMER_LOGOUT_REQUEST });
 
     await axios.post(
-      'http://127.0.0.1:5001/api/auth/customer/logout',
+      `${USER_SERVICE_URL}/api/auth/customer/logout`,
       {},
       { withCredentials: true }
     );
@@ -57,7 +62,7 @@ export const registerCustomer = (name, email, password) => async (dispatch) => {
     dispatch({ type: CUSTOMER_REGISTER_REQUEST });
 
     const { data } = await axios.post(
-      'http://127.0.0.1:5001/api/auth/customer/signup',
+      `${USER_SERVICE_URL}/api/auth/customer/signup`,
       { name, email, password },
       { withCredentials: true }
     );
