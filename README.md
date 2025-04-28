@@ -57,7 +57,13 @@ You should see `kafka-controller` pods and `zookeeper-0` pod all in `Running` st
 
 ## Step 4: Deploy Backend Services
 
-We already built Docker images and pushed them to DockerHub.
+built Docker images:
+docker build -t order-service:latest ./order-service
+
+pushed them to DockerHub:
+docker tag order-service:latest your-dockerhub-username/order-service:latest
+docker push your-dockerhub-username/order-service:latest
+
 Now deploy the services:
 
 ```bash
