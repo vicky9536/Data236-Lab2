@@ -24,6 +24,7 @@ export const dishGetReducer = (state = initialStateGet, action) => {
         case GET_ONE_DISH_REQUEST:
             return { loading: true, dish: null, error: null };
         case GET_ONE_DISH_SUCCESS:
+            console.log("getOneDish data-reducer:", action.payload);
             return { loading: false, dish: action.payload, error: null };
         case GET_ONE_DISH_FAIL:
             return { loading: false, dish: null, error: action.payload };

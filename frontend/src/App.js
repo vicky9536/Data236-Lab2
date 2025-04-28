@@ -46,7 +46,7 @@ const App = () => {
         <Route path="/restaurant_register" element={<RestaurantSignup />} />
         <Route path="/restaurant_dashboard" element={<RestaurantDashboard />} />
         <Route path="/restaurant/profile/update" element={<UpdateRestaurant />} />
-        <Route path="/restaurant/edit_dish/:dish_name" element={<EditDish />} />
+        <Route path="/restaurant/edit_dish/:dishId" element={<EditDish />} />
         <Route path="/restaurant/add_dish" element={<AddDish />} />
         <Route path="/restaurant/order" element={<OrderOnRestaurant />} />
         <Route path="/restaurant/order/edit_order/:order_Id" element={<UpdateOrder />} />

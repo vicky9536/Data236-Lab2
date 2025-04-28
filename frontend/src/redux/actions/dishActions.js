@@ -28,6 +28,7 @@ export const getOneDish = (dishId) => async (dispatch) => {
         const { data } = await axios.get(`http://127.0.0.1:5002/api/dish/get/${dishId}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
+        console.log("getOneDish data-action:", data);
         dispatch({ type: GET_ONE_DISH_SUCCESS, payload: data });
     } catch (error) {
         dispatch({

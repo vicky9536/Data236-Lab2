@@ -33,7 +33,7 @@ const RestaurantDashboard = () => {
   }, [dispatch, restaurant?.id, refresh]);
 
   const handleEditDish = (dish) => {
-    navigate(`/restaurant/edit_dish/${dish.name}`);
+    navigate(`/restaurant/edit_dish/${dish._id}`);
   };
 
   const handleDeleteDish = async (dishId) => {
@@ -134,6 +134,9 @@ const RestaurantDashboard = () => {
                           <Card.Text>{dish.description}</Card.Text>
                           <Card.Text>
                             <strong>Price:</strong> ${dish.price}
+                          </Card.Text>
+                          <Card.Text>
+                            <strong>Category:</strong> {dish.category}
                           </Card.Text>
                           <div className="d-flex justify-content-between">
                             <Button variant="outline-primary" onClick={() => handleEditDish(dish)}>

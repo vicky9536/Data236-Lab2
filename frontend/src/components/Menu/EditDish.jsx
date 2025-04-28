@@ -8,10 +8,12 @@ import Layout from '../Layout/Layout';
 const EditDish = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { dish_name } = useParams(); // Get the dish name from the URL
+  const { dishId } = useParams(); 
+
+  console.log("dishId:", dishId);
   
   // Fetch the dish data from the Redux store
-  const { loading, dish, error } = useSelector((state) => state.getOneDish) || { dish: {} };
+  const { loading, dish, error } = useSelector((state) => state.dishGet) || { dish: {} };
 
   const [newData, setNewData] = useState({
     name: '',
@@ -21,8 +23,8 @@ const EditDish = () => {
   });
 
   useEffect(() => {
-    dispatch(getOneDish(dish_name)); // Dispatch action to get the dish by dish_name
-  }, [dispatch, dish_name]);
+    dispatch(getOneDish(dishId));
+  }, [dispatch, dishId]);
 
 
   console.log("dish:", dish);
