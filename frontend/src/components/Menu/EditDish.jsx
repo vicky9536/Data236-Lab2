@@ -10,8 +10,6 @@ const EditDish = () => {
   const dispatch = useDispatch();
   const { dishId } = useParams(); 
 
-  console.log("dishId:", dishId);
-  
   // Fetch the dish data from the Redux store
   const { loading, dish, error } = useSelector((state) => state.dishGet) || { dish: {} };
 
@@ -26,9 +24,6 @@ const EditDish = () => {
     dispatch(getOneDish(dishId));
   }, [dispatch, dishId]);
 
-
-  console.log("dish:", dish);
-  
   useEffect(() => {
     if (dish && dish._id) {
       setNewData({
