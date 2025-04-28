@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Row, Col, Card, Button, Spinner } from 'react-bootstrap';
+import { Row, Col, Card, Button, Container } from 'react-bootstrap';
 import { getFavorites, removeFavorite } from '../../redux/actions/favoriteActions';
 import { getFavoriteRestProfile } from '../../redux/actions/restProfileActions';
+import Layout from '../Layout/Layout';
 
 const FavoriteRestaurants = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [refresh, setRefresh] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastVariant, setToastVariant] = useState('success');
-  const [showToast, setShowToast] = useState(false);
-  const [restaurantDetails, setRestaurantDetails] = useState({}); 
-
+  const [restaurantDetails, setRestaurantDetails] = useState({});
   const restaurants = useSelector((state) => state.favoriteList.restaurants);
   const restaurantDetailsState = useSelector((state) => state.getFavoriteRestProfile);
 
@@ -22,16 +18,14 @@ const FavoriteRestaurants = () => {
     dispatch(getFavorites());
   }, [dispatch]);
 
-  console.log("Favorites:", restaurants);
   useEffect(() => {
     const fetchRestaurantDetails = async () => {
       if (restaurants && restaurants.length > 0) {
         for (const restaurant of restaurants) {
           if (!restaurantDetails[restaurant.restaurantId]) {
-            console.log("Fetching restaurant details for:", restaurant.restaurantId);
             const details = await dispatch(getFavoriteRestProfile(restaurant.restaurantId));
             if (details && details.payload) {
-              setRestaurantDetails(prev => ({
+              setRestaurantDetails((prev) => ({
                 ...prev,
                 [restaurant.restaurantId]: details.payload
               }));
@@ -40,93 +34,66 @@ const FavoriteRestaurants = () => {
         }
       }
     };
-  
+
     fetchRestaurantDetails();
   }, [restaurants, dispatch, restaurantDetails]);
-  
 
-  console.log("Restaurants Details:", restaurantDetails); 
-
-  const handleRemoveFavorite = (restaurantId) => {
-    dispatch(removeFavorite(restaurantId));
-    dispatch(getFavorites());
-    setToastMessage('Restaurant removed from favorites');
-    setToastVariant('success');
-    setShowToast(true);
-    setRefresh(!refresh);
-  }
-
-  const handleCardClick = (restaurantId, e) => {
+  const handleRemoveFavorite = async (restaurantId, e) => {
     e.stopPropagation();
+    await dispatch(removeFavorite(restaurantId));
+
+  };
+
+  const handleCardClick = (restaurantId) => {
     const restaurantName = restaurantDetailsState.restaurants[restaurantId]?.name;
     if (restaurantName) {
-      navigate(`/customer_dashboard/${restaurantName}`);
-    } else {
-      console.error("Restaurant name not found for restaurantId:", restaurantId);
+      navigate(`/customer_dashboard/${encodeURIComponent(restaurantName)}`);
     }
   };
-  
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4">My Favorite Restaurants</h2>
-      {restaurants && restaurants.length > 0 ? (
-        <Row>
-          {restaurants.map((restaurant, index) => {
-            const details = restaurantDetailsState.restaurants[restaurant.restaurantId];
-            return (
-              <Col key={index} md={6} lg={4} className="mb-5 d-flex flex-column align-items-center">
-                {/* Wrapper Div */}
-                <div style={{ width: '100%', maxWidth: '350px' }}>
-                  <Card 
-                    className="shadow-sm" 
-                    style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer' }}
-                    onClick={(e) => handleCardClick(restaurant.restaurantId, e)}
-                  >
-                    {/* Image */}
-                    {details?.image_url ? (
-                      <Card.Img 
-                        variant="top" 
-                        src={details.image_url} 
-                        style={{ height: '200px', objectFit: 'cover' }}
-                      />
-                    ) : (
-                      <Card.Img 
-                        variant="top" 
-                        src="https://via.placeholder.com/400x200?text=Restaurant" 
-                        style={{ height: '200px', objectFit: 'cover' }}
-                      />
-                    )}
-                    
-                    {/* Divider Line */}
-                    <div style={{ borderTop: '1px solid #dee2e6' }}></div>
+    <Layout isLoggedInDashboard={true} showButtons={false} variant="dashboard">
+      <Container className="mt-4">
+        <h2 className="text-center mb-4">My Favorite Restaurants</h2>
 
-                    {/* Name + Button on the same line */}
-                    <Card.Body className="py-2 px-3 d-flex justify-content-between align-items-center">
-                      <Card.Title style={{ fontSize: '1.1rem', marginBottom: '0', fontWeight: 'bold' }}>
+        {restaurants && restaurants.length > 0 ? (
+          <Row>
+            {restaurants.map((restaurant) => {
+              const details = restaurantDetailsState.restaurants[restaurant.restaurantId];
+              return (
+                <Col key={restaurant.restaurantId} md={4} className="mb-4">
+                  <Card
+                    onClick={() => handleCardClick(restaurant.restaurantId)}
+                    style={{ cursor: 'pointer' }}
+                    className="shadow-sm"
+                  >
+                    <Card.Img
+                      variant="top"
+                      src={details?.image_url || 'https://via.placeholder.com/400x200?text=Restaurant'}
+                      style={{ height: '200px', objectFit: 'cover' }}
+                    />
+                    <Card.Body className="d-flex justify-content-between align-items-center">
+                      <Card.Title className="mb-0" style={{ fontSize: '1rem' }}>
                         {details?.name || 'Restaurant'}
                       </Card.Title>
-                      <Button 
-                        variant="outline-danger" 
+                      <Button
+                        variant="outline-danger"
                         size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent card click
-                          handleRemoveFavorite(restaurant._id);
-                        }}
+                        onClick={(e) => handleRemoveFavorite(restaurant._id, e)}
                       >
-                        Remove
+                        Delete
                       </Button>
                     </Card.Body>
                   </Card>
-                </div>
-              </Col>
-            );
-          })}
-        </Row>
-      ) : (
-        <p className="text-center">No favorite restaurants yet.</p>
-      )}
-    </div>
+                </Col>
+              );
+            })}
+          </Row>
+        ) : (
+          <p className="text-center">No favorite restaurants yet.</p>
+        )}
+      </Container>
+    </Layout>
   );
 };
 

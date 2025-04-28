@@ -4,15 +4,23 @@ import {
     FAVORITE_REMOVE_REQUEST, FAVORITE_REMOVE_SUCCESS, FAVORITE_REMOVE_FAIL
 } from "../constants/favoriteConstants";
 
-const initialState = { loading: false, restaurants: {}, error: null };
+const initialState = { loading: false, restaurants: [], error: null };
 export const favoriteListReducer = (state = initialState, action) => {
     switch (action.type) {
         case FAVORITE_LIST_REQUEST:
-            return { loading: true, restaurants: {}, error: null };
+            return { loading: true, restaurants: [], error: null };
         case FAVORITE_LIST_SUCCESS:
             return { loading: false, restaurants: action.payload, error: null };
         case FAVORITE_LIST_FAIL:
-            return { loading: false, restaurants: {}, error: action.payload };
+            return { loading: false, restaurants: [], error: action.payload };
+        case FAVORITE_REMOVE_SUCCESS:
+            return {
+                ...state,
+                restaurants: state.restaurants.filter(
+                (restaurant) => restaurant.restaurantId !== action.payload
+                ),
+            };
+    
         default:
             return state;
     }

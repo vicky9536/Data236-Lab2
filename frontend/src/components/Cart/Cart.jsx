@@ -88,7 +88,7 @@ const Cart = () => {
     }
   };
 
-  const handleIncrementQuantity = (dishId) => {
+  const handleIncrementQuantity =  (dishId) => {
     const cartItem = cartList.cartItems.find(item => item.dishId === dishId);
     if (cartItem) {
       const newQuantity = cartItem.quantity + 1;
@@ -97,7 +97,7 @@ const Cart = () => {
     }
   };
 
-  const handleDecrementQuantity = (dishId) => {
+  const handleDecrementQuantity =  (dishId) => {
     const cartItem = cartList.cartItems.find(item => item.dishId === dishId);
     if (cartItem && cartItem.quantity > 1) {
       const newQuantity = cartItem.quantity - 1;
