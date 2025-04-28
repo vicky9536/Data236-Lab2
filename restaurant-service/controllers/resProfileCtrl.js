@@ -1,5 +1,6 @@
 const Restaurant = require('../models/restaurant');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const verifyToken = (req) => {
     const authHeader = req.headers.authorization;
@@ -31,7 +32,8 @@ exports.viewMyRestInfo = async (req, res) => {
 // View restaurant info
 exports.viewRestInfo = async (req, res) => {
     try {
-        const restaurant = await Restaurant.findOne({ name: req.params.name });
+        const restaurantId = new mongoose.Types.ObjectId(req.params.id);
+        const restaurant = await Restaurant.findOne({ _id: restaurantId });
         if (!restaurant) {
             return res.status(404).json({error: "Restaurant not found"});
         }

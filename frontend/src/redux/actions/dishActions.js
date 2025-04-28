@@ -40,8 +40,8 @@ export const getOneDish = (dishId) => async (dispatch) => {
 export const getDishDetails = (dishId) => async (dispatch, getState) => {
     try {
         dispatch({ type: GET_DISH_DETAILS_REQUEST });
-        const { data } = await axios.get(`http://127.0.0.1:5002/api/dish/get/${dishId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+            const { data } = await axios.get(`http://127.0.0.1:5002/api/dish/get/${dishId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
         dispatch({ type: GET_DISH_DETAILS_SUCCESS, payload: data });
     } catch (error) {

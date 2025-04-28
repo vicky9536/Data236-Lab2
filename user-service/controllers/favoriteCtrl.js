@@ -23,11 +23,7 @@ exports.getFavorites = async (req, res) => {
 
         // Fetch favorites and populate the associated restaurant details
         const favorites = await Favorite.find({ customerId }).exec();
-
-        // Extract restaurantId
-        const restaurantIds = favorites.map(favorite => favorite.restaurantId);
-
-        res.json({ restaurantIds });
+        res.json({ favorites });
     } catch (error) {
         console.error("Error fetching favorites:", error);
         res.status(500).json({ error: error.message });

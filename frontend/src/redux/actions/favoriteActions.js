@@ -6,20 +6,19 @@ import { FAVORITE_REMOVE_REQUEST, FAVORITE_REMOVE_SUCCESS, FAVORITE_REMOVE_FAIL 
 // Get Favorites
 export const getFavorites = () => async (dispatch) => {
     try {
-      dispatch({ type: FAVORITE_LIST_REQUEST });
-  
-      const { data: favoriteData } = await axios.get('http://127.0.0.1:5001/api/favorites/getFavorites', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
-      });
-      dispatch({ type: FAVORITE_LIST_SUCCESS, payload: favoriteData });
+        dispatch({ type: FAVORITE_LIST_REQUEST });
+        const { data: favoriteData } = await axios.get('http://127.0.0.1:5001/api/favorites/getFavorites', {
+            headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        console.log("getFavorites data: ", favoriteData.favorites);
+        dispatch({ type: FAVORITE_LIST_SUCCESS, payload: favoriteData.favorites });
     } catch (error) {
-      dispatch({
-        type: FAVORITE_LIST_FAIL,
-        payload: error.response?.data?.message || error.message,
-      });
+        dispatch({
+            type: FAVORITE_LIST_FAIL,
+            payload: error.response?.data?.message || error.message,
+        });
     }
 };
-  
 
 // Add Favorite
 export const addFavorite = (restInput) => async (dispatch) => {
