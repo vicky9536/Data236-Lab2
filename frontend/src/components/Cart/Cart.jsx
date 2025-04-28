@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Row, Col, Card, Button, Toast, ToastContainer, Spinner } from 'react-bootstrap';
-import { getCart, deleteCart, checkout } from '../../redux/actions/cartActions';
+import { getCart, deleteCart, checkout, updateCartItemQuantity } from '../../redux/actions/cartActions'; // Added updateCartItemQuantity
 import { getDishDetails } from '../../redux/actions/dishActions';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../Layout/Layout';
@@ -16,7 +16,7 @@ const Cart = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [toastVariant, setToastVariant] = useState('success');
   const [showToast, setShowToast] = useState(false);
-  const [dishDetails, setDishDetails] = useState({}); 
+  const [dishDetails, setDishDetails] = useState({});
 
   const cartList = useSelector((state) => state.cartList);
   const dishDetailsState = useSelector((state) => state.dishDetails);
@@ -88,6 +88,24 @@ const Cart = () => {
     }
   };
 
+  const handleIncrementQuantity = (dishId) => {
+    const cartItem = cartList.cartItems.find(item => item.dishId === dishId);
+    if (cartItem) {
+      const newQuantity = cartItem.quantity + 1;
+      dispatch(updateCartItemQuantity(cartItem._id, newQuantity));
+      dispatch(getCart());
+    }
+  };
+
+  const handleDecrementQuantity = (dishId) => {
+    const cartItem = cartList.cartItems.find(item => item.dishId === dishId);
+    if (cartItem && cartItem.quantity > 1) {
+      const newQuantity = cartItem.quantity - 1;
+      dispatch(updateCartItemQuantity(cartItem._id, newQuantity));
+      dispatch(getCart());
+    }
+  };
+
   return (
     <Layout variant="dashboard" isLoggedInDashboard={true}>
       <div className="cart-page">
@@ -109,7 +127,7 @@ const Cart = () => {
             </Col>
           ) : (
             cartList?.cartItems?.map((item) => {
-              const dish = dishDetailsState.dishes[item.dishId]; 
+              const dish = dishDetailsState.dishes[item.dishId];
 
               return (
                 <Col key={item._id} md={4} className="mb-4">
@@ -120,6 +138,25 @@ const Cart = () => {
                           <Card.Title>{dish.name}</Card.Title>
                           <Card.Text>Price: ${dish.price.toFixed(2)}</Card.Text>
                           <Card.Text>Quantity: {item.quantity}</Card.Text>
+
+                          {/* Quantity Buttons */}
+                          <div className="quantity-buttons">
+                            <Button
+                              variant="outline-secondary"
+                              onClick={() => handleDecrementQuantity(item.dishId)}
+                              className="btn-quantity"
+                            >
+                              -
+                            </Button>
+                            <Button
+                              variant="outline-secondary"
+                              onClick={() => handleIncrementQuantity(item.dishId)}
+                              className="btn-quantity"
+                            >
+                              +
+                            </Button>
+                          </div>
+
                           <Button
                             variant="danger"
                             onClick={() => handleRemoveItem(item._id)}

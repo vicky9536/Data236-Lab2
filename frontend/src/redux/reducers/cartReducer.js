@@ -1,5 +1,6 @@
 import  { ADD_TO_CART_REQUEST, ADD_TO_CART_SUCCESS, ADD_TO_CART_FAILURE
     , GET_CART_REQUEST, GET_CART_SUCCESS, GET_CART_FAILURE,
+    UPDATE_CART_ITEM_QUANTITY_REQUEST, UPDATE_CART_ITEM_QUANTITY_SUCCESS, UPDATE_CART_ITEM_QUANTITY_FAILURE,
      DELETE_CART_REQUEST, DELETE_CART_SUCCESS, DELETE_CART_FAILURE, 
      CHECKOUT_REQUEST, CHECKOUT_SUCCESS, CHECKOUT_FAILURE } from "../constants/cartConstants";
 
@@ -30,6 +31,25 @@ import  { ADD_TO_CART_REQUEST, ADD_TO_CART_SUCCESS, ADD_TO_CART_FAILURE
                 return state;
         }
      }
+
+     const initialStateUpdate = { loading: false, cartItems: [], error: null };
+    export const updateCartItemQuantityReducer = (state = initialStateUpdate, action) => {
+    switch (action.type) {
+        case UPDATE_CART_ITEM_QUANTITY_REQUEST:
+        return { ...state, loading: true };
+        case UPDATE_CART_ITEM_QUANTITY_SUCCESS:
+        return {
+            loading: false,
+            cartItems: action.payload,
+            error: null,
+        };
+        case UPDATE_CART_ITEM_QUANTITY_FAILURE:
+        return { loading: false, cartItems: [], error: action.payload };
+        default:
+        return state;
+    }
+    };
+
 
      const initialStateDelete = { loading: false, cartItems: [], error: null };
      export const deleteCartReducer = (state = initialStateDelete, action) => {

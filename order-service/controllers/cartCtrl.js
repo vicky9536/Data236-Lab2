@@ -53,6 +53,29 @@ exports.addCart = async (req, res) => {
     }
 };
 
+// update quantity of dish in cart
+exports.updateCartItemQuantity = async (req, res) => {
+    try {
+        const { quantity } = req.body;
+        const user = verifyToken(req);
+        const customerId = user.customerId;
+        const cartItem = await Cart.findOneAndUpdate(
+            { _id: new mongoose.Types.ObjectId(req.params.id), customerId },
+            { quantity },
+            { new: true }
+        );
+        if (cartItem) {
+            res.status(200).json(cartItem);
+        } else {
+            res.status(404).json({error: "Cart item not found"});
+        }
+    } catch (error) {
+        console.error("Error updating cart item quantity:", error);
+        res.status(500).json({error: error.message});
+    }
+}
+
+
 // delete dish from cart
 exports.deleteCart = async (req, res) => {
     try {

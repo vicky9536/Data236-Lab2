@@ -3,7 +3,8 @@ import { restaurantListReducer, restDishesListReducer } from "./restaurantReduce
 import { favoriteAddReducer, favoriteListReducer, favoriteRemoveReducer } from "./favoriteReducer";
 import { customerLoginReducer, customerLogoutReducer, customerRegisterReducer } from "./authCusReducer";
 import { getCusProfileReducer, updateCusProfileReducer, getCusProfileOrderReducer } from "./cusProfileReducer";
-import { getCartReducer, addCartReducer, deleteCartReducer } from "./cartReducer";
+import { getCartReducer, addCartReducer, deleteCartReducer, 
+    updateCartItemQuantityReducer, checkoutReducer} from "./cartReducer";
 import { restaurantLoginReducer, restaurantLogoutReducer, restaurantRegisterReducer } from "./authRestReducer";
 import { getRestProfileReducer, getMyRestProfileReducer, updateRestProfileReducer, getFavoriteRestProfileReducer } from "./restProfileReducer";
 import { dishAddReducer, dishGetReducer, dishDetailsReducer, dishUpdateReducer, dishDeleteReducer } from "./dishReducer";
@@ -25,6 +26,8 @@ const rootReducer = combineReducers({
     cartList: getCartReducer,
     cartAdd: addCartReducer,
     cartDelete: deleteCartReducer,  
+    cartUpdate: updateCartItemQuantityReducer,
+    checkout: checkoutReducer,
     restaurantLogin: restaurantLoginReducer,
     restaurantLogout: restaurantLogoutReducer,
     restaurantRegister: restaurantRegisterReducer,
