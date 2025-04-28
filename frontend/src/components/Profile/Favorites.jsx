@@ -66,21 +66,56 @@ const FavoriteRestaurants = () => {
       <h2 className="mb-4">My Favorite Restaurants</h2>
       {restaurants && restaurants.length > 0 ? (
         <Row>
-          {restaurants.map((restaurant, index) => (
-            <Col key={index} md={6} lg={4} className="mb-4">
-              <Card onClick={(e) => handleCardClick(restaurant.restaurantId, e)} style={{ cursor: 'pointer' }}>
-                <Card.Body>
-                  <Card.Title>{restaurantDetails[restaurant.restaurantId]?.name || 'Restaurant'}</Card.Title>
-                  <Button variant="danger" onClick={() => handleRemoveFavorite(restaurant.restaurantId)}>
-                    Remove from Favorites
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
+          {restaurants.map((restaurant, index) => {
+            const details = restaurantDetailsState.restaurants[restaurant.restaurantId];
+            return (
+              <Col key={index} md={6} lg={4} className="mb-4">
+                <Card 
+                  className="shadow-sm d-flex flex-column" 
+                  style={{ height: '100%' }}
+                >
+                  {/* Clicking image or card body navigates */}
+                  <div onClick={(e) => handleCardClick(restaurant.restaurantId, e)} style={{ cursor: 'pointer' }}>
+                    {details?.image_url ? (
+                      <Card.Img 
+                        variant="top" 
+                        src={details.image_url} 
+                        style={{ height: '200px', objectFit: 'cover' }} 
+                      />
+                    ) : (
+                      <Card.Img 
+                        variant="top" 
+                        src="https://via.placeholder.com/400x200?text=Restaurant" 
+                        style={{ height: '200px', objectFit: 'cover' }} 
+                      />
+                    )}
+                    <Card.Body className="text-center">
+                      <Card.Title className="mb-2" style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
+                        {details?.name || 'Restaurant'}
+                      </Card.Title>
+                    </Card.Body>
+                  </div>
+
+                  {/* Remove button at bottom */}
+                  <Card.Footer className="bg-white border-0 text-center">
+                    <Button 
+                      variant="outline-danger" 
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent card click
+                        handleRemoveFavorite(restaurant.restaurantId);
+                      }}
+                    >
+                      Remove from Favorites
+                    </Button>
+                  </Card.Footer>
+                </Card>
+              </Col>
+            );
+          })}
         </Row>
       ) : (
-        <p>No favorite restaurants yet.</p>
+        <p className="text-center">No favorite restaurants yet.</p>
       )}
     </div>
   );
