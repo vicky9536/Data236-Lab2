@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: nairui/user-service:latest
+          image: 982081080014.dkr.ecr.us-east-2.amazonaws.com/user-service:latest
           ports:
             - containerPort: 5001
           env:
@@ -22,3 +22,5 @@ spec:
               value: "mongodb+srv://nairuiliu:018213234Sh12%4095@clusterlab2.o3pwqmp.mongodb.net/?retryWrites=true&w=majority&appName=ClusterLab2"
             - name: JWT_SECRET
               value: "your_jwt_secret_key"
+            - name: KAFKA_BROKER
+              value: "kafka.default.svc.cluster.local:9092"

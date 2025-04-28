@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: restaurant-service
-          image: nairui/restaurant-service:latest
+          image: 982081080014.dkr.ecr.us-east-2.amazonaws.com/restaurant-service:latest
           ports:
             - containerPort: 5002
           env:
@@ -23,4 +23,4 @@ spec:
             - name: JWT_SECRET
               value: "your_jwt_secret_key"
             - name: KAFKA_BROKER
-              value: "kafka:9092"
+              value: "kafka.default.svc.cluster.local:9092"
