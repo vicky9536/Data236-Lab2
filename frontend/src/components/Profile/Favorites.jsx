@@ -57,9 +57,14 @@ const FavoriteRestaurants = () => {
 
   const handleCardClick = (restaurantId, e) => {
     e.stopPropagation();
-    navigate(`/restaurant/${restaurantId}`);
+    const restaurantName = restaurantDetailsState.restaurants[restaurantId]?.name;
+    if (restaurantName) {
+      navigate(`/customer_dashboard/${restaurantName}`);
+    } else {
+      console.error("Restaurant name not found for restaurantId:", restaurantId);
+    }
   };
-
+  
 
   return (
     <div className="container mt-4">
@@ -69,47 +74,50 @@ const FavoriteRestaurants = () => {
           {restaurants.map((restaurant, index) => {
             const details = restaurantDetailsState.restaurants[restaurant.restaurantId];
             return (
-              <Col key={index} md={6} lg={4} className="mb-4">
-                <Card 
-                  className="shadow-sm d-flex flex-column" 
-                  style={{ height: '100%' }}
-                >
-                  {/* Clicking image or card body navigates */}
-                  <div onClick={(e) => handleCardClick(restaurant.restaurantId, e)} style={{ cursor: 'pointer' }}>
+              <Col key={index} md={6} lg={4} className="mb-5 d-flex flex-column align-items-center">
+                {/* Wrapper Div */}
+                <div style={{ width: '100%', maxWidth: '350px' }}>
+                  <Card 
+                    className="shadow-sm" 
+                    style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer' }}
+                    onClick={(e) => handleCardClick(restaurant.restaurantId, e)}
+                  >
+                    {/* Image */}
                     {details?.image_url ? (
                       <Card.Img 
                         variant="top" 
                         src={details.image_url} 
-                        style={{ height: '200px', objectFit: 'cover' }} 
+                        style={{ height: '200px', objectFit: 'cover' }}
                       />
                     ) : (
                       <Card.Img 
                         variant="top" 
                         src="https://via.placeholder.com/400x200?text=Restaurant" 
-                        style={{ height: '200px', objectFit: 'cover' }} 
+                        style={{ height: '200px', objectFit: 'cover' }}
                       />
                     )}
-                    <Card.Body className="text-center">
-                      <Card.Title className="mb-2" style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
+                    
+                    {/* Divider Line */}
+                    <div style={{ borderTop: '1px solid #dee2e6' }}></div>
+
+                    {/* Name + Button on the same line */}
+                    <Card.Body className="py-2 px-3 d-flex justify-content-between align-items-center">
+                      <Card.Title style={{ fontSize: '1.1rem', marginBottom: '0', fontWeight: 'bold' }}>
                         {details?.name || 'Restaurant'}
                       </Card.Title>
+                      <Button 
+                        variant="outline-danger" 
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent card click
+                          handleRemoveFavorite(restaurant.restaurantId);
+                        }}
+                      >
+                        Remove
+                      </Button>
                     </Card.Body>
-                  </div>
-
-                  {/* Remove button at bottom */}
-                  <Card.Footer className="bg-white border-0 text-center">
-                    <Button 
-                      variant="outline-danger" 
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation(); // prevent card click
-                        handleRemoveFavorite(restaurant.restaurantId);
-                      }}
-                    >
-                      Remove from Favorites
-                    </Button>
-                  </Card.Footer>
-                </Card>
+                  </Card>
+                </div>
               </Col>
             );
           })}
