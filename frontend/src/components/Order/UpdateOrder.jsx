@@ -13,10 +13,10 @@ const UpdateOrder = () => {
     
     // Access orders safely, making sure it's an array
     const { loading, orders = [], error } = useSelector((state) => state.getResOrder) || { orders: [] };
-    const initialOrderData = orders.find(order => order._id === order_Id); // Use find() to get the correct order by _id
+    const initialOrderData = orders.find(order => order._id === order_Id); 
 
-    const [newStatus, setNewStatus] = useState({
-        status: initialOrderData ? initialOrderData.status : '',
+    const [newDeliveryStatus, setNewDeliveryStatus] = useState({
+        deliveryStatus: initialOrderData ? initialOrderData.deliveryStatus : '',
     });
 
     useEffect(() => {
@@ -28,15 +28,15 @@ const UpdateOrder = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setNewStatus((prevStatus) => ({
-            ...prevStatus,
+        setNewDeliveryStatus((prevDeliveryStatus) => ({
+            ...prevDeliveryStatus,
             [name]: value,
         }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(updateOrder(order_Id, newStatus));
+        dispatch(updateOrder(order_Id, newDeliveryStatus));
         navigate('/restaurant/order');
     };
 
@@ -61,13 +61,13 @@ const UpdateOrder = () => {
                                             Price: ${initialOrderData.price}
                                         </Form.Text><br /><br />
                                         <Form.Text className="match-label-style">
-                                            Current Status: {initialOrderData.status}
+                                            Current Status: {initialOrderData.regularStatus}
                                         </Form.Text><br /><br />
                                         <Form.Label>Delivery Status: </Form.Label>
                                         <Form.Control
                                             as="select"
-                                            name="status"
-                                            value={newStatus.status}
+                                            name="deliveryStatus"
+                                            value={newDeliveryStatus.deliveryStatus}
                                             onChange={handleChange}
                                             placeholder="Choose status"
                                             required

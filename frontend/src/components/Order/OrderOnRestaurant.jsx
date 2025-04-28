@@ -17,8 +17,6 @@ const Order = () => {
     dispatch(getAllRestaurantOrders());
   }, [dispatch]);
 
-  console.log("Orders:", orders);
-
   const handleStatusFilterChange = (status) => {
     setStatusFilter(status);
   };

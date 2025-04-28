@@ -52,7 +52,6 @@ export const orderUpdateReducer = (state = initialStateUpdate, action) => {
         case UPDATE_ORDER_REQUEST:
             return { loading: true, order: null, error: null };
         case UPDATE_ORDER_SUCCESS:
-            console.log("data-reducer:",action.payload);
             return { loading: false, order: action.payload, error: null };
         case UPDATE_ORDER_FAILURE:
             return { loading: false, order: null, error: action.payload };

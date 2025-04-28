@@ -49,7 +49,7 @@ export const createOrder = (orderInput) => async (dispatch) => {
     }
 };
 
-export const updateOrder = (order_Id, restaurant_Id, orderInput) => async (dispatch) => {
+export const updateOrder = (order_Id, orderInput) => async (dispatch) => {
     try {
         dispatch({ type: UPDATE_ORDER_REQUEST });
         const { data } = await axios.put(`http://127.0.0.1:5003/api/order/update/${order_Id}`, orderInput, {

@@ -104,12 +104,18 @@ exports.updateOrderStatus = async (req, res) => {
         const restaurantId = user.id;
         const orderId = new mongoose.Types.ObjectId(req.params.id);
         const { deliveryStatus } = req.body;
+
+        let regularStatus = 'New';  // Default value for regularStatus
+        if (deliveryStatus === 'Delivered') {
+            regularStatus = 'Delivered';
+        }
+        
         const updatedOrder = await Order.findOneAndUpdate(
             { _id: orderId, restaurantId },
-            { deliveryStatus },
+            { deliveryStatus, regularStatus },
             { new: true }
         );
-
+    
         if (!updatedOrder) {
             return res.status(404).json({ error: "Order not found" });
         }
