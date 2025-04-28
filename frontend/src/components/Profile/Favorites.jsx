@@ -26,19 +26,24 @@ const FavoriteRestaurants = () => {
   useEffect(() => {
     const fetchRestaurantDetails = async () => {
       if (restaurants && restaurants.length > 0) {
-        const newRestaurantDetails = { ...restaurantDetails};
         for (const restaurant of restaurants) {
-          if (!restaurantDetails[restaurant]) {
+          if (!restaurantDetails[restaurant.restaurantId]) {
             console.log("Fetching restaurant details for:", restaurant.restaurantId);
-            dispatch(getFavoriteRestProfile(restaurant.restaurantId));
+            const details = await dispatch(getFavoriteRestProfile(restaurant.restaurantId));
+            if (details && details.payload) {
+              setRestaurantDetails(prev => ({
+                ...prev,
+                [restaurant.restaurantId]: details.payload
+              }));
+            }
           }
         }
       }
     };
-
+  
     fetchRestaurantDetails();
   }, [restaurants, dispatch, restaurantDetails]);
-
+  
 
   console.log("Restaurants Details:", restaurantDetails); 
 
@@ -59,7 +64,24 @@ const FavoriteRestaurants = () => {
   return (
     <div className="container mt-4">
       <h2 className="mb-4">My Favorite Restaurants</h2>
-
+      {restaurants && restaurants.length > 0 ? (
+        <Row>
+          {restaurants.map((restaurant, index) => (
+            <Col key={index} md={6} lg={4} className="mb-4">
+              <Card onClick={(e) => handleCardClick(restaurant.restaurantId, e)} style={{ cursor: 'pointer' }}>
+                <Card.Body>
+                  <Card.Title>{restaurantDetails[restaurant.restaurantId]?.name || 'Restaurant'}</Card.Title>
+                  <Button variant="danger" onClick={() => handleRemoveFavorite(restaurant.restaurantId)}>
+                    Remove from Favorites
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      ) : (
+        <p>No favorite restaurants yet.</p>
+      )}
     </div>
   );
 };
