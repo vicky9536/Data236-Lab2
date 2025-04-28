@@ -31,6 +31,10 @@ const Order = () => {
     navigate(`/restaurant/order/edit_order/${orderId}`);
   };
 
+  const handleViewProfile = (orderId) => {
+    navigate(`/restaurant/order/view_cus_profile/${orderId}`);
+  };
+
   return (
     <Layout variant="restaurant_dashboard" isLoggedInDashboard={true}>
       <div className="order-page">
@@ -101,7 +105,7 @@ const Order = () => {
                       <div className="d-flex justify-content-center gap-2 mt-3">
                         <Button
                           variant="outline-primary"
-                          onClick={() => navigate(`/customer/profile/${order.customerId}`)}
+                          onClick={() => handleViewProfile(order._id)}
                           className="btn-view-profile"
                         >
                           View Profile

@@ -1,6 +1,7 @@
 const Customer = require('../models/customer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const verifyToken = (req) => {
     const authHeader = req.headers.authorization;
@@ -13,6 +14,26 @@ const verifyToken = (req) => {
     }
     return jwt.verify(token, process.env.JWT_SECRET);
 };
+
+// view customer profile through order
+exports.viewCusProfileThruOrder = async (req, res) => {
+    try {
+        const user = verifyToken(req);
+        const restaurantId = user.id;
+        const customerId = new mongoose.Types.ObjectId(req.params.customerId);
+        const customer = await Customer.findById(customerId).select('-password');
+        if (!customer) {
+            return res.status(404).json({ error: "Customer not found" });
+        }
+
+        res.status(200).json(customer);
+    }
+    catch (error) {
+        console.error("Error fetching customer profile:", error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 // view customer profile
 exports.viewCusProfile = async (req, res) => {

@@ -57,7 +57,7 @@ const RestaurantDashboard = () => {
   };
 
   const handleAddDish = () => {
-    navigate('/restaurant/add_dish'); // Add dish page route
+    navigate('/restaurant/add_dish');
   };
 
   const toastContainerStyle = {

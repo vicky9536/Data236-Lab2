@@ -48,6 +48,26 @@ exports.getAllRestaurantOrders = async (req, res) => {
     }
 };
 
+// get order by id
+exports.getOrderById = async (req, res) => {
+    const user = verifyToken(req);
+    if (!user.id) {
+        return res.status(403).json({ error: "Forbidden: only restaurants can view orders" });
+    }
+
+    try {
+        const orderId = new mongoose.Types.ObjectId(req.params.id);
+        const order = await Order.findById(orderId).exec();
+        if (!order) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+        res.status(200).json(order);
+    } catch (error) {
+        console.error("Error fetching order:", error);
+        res.status(500).json({error: error.message});
+    }
+};
+
 // create a new order
 exports.createOrder = async (req, res) => {
     // if (!req.session.consumerId) {
