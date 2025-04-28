@@ -4,6 +4,7 @@ const Cart = require('../models/cart');
 const Order = require('../models/order');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const { sendOrderCreatedEvent } = require('../kafka/producer');
 
 const verifyToken = (req) => {
     const authHeader = req.headers.authorization;
@@ -102,6 +103,7 @@ exports.checkout = async (req, res) => {
     try {
         const user = verifyToken(req);
         const customerId = user.customerId;
+        console.log('Checkout Request Body:', req.body);
         const { cartItems, restaurantId, totalPrice } = req.body;
         if (!cartItems || cartItems.length === 0) {
             return res.status(400).json({ error: "Cart is empty" });
@@ -114,6 +116,10 @@ exports.checkout = async (req, res) => {
             regularStatus: 'New',
             deliveryStatus: 'Order Received',
         });
+
+        await sendOrderCreatedEvent(order);
+        console.log('Kafka event sent for new order.');
+
         await Cart.deleteMany({ customerId });
 
         res.status(200).json(order);

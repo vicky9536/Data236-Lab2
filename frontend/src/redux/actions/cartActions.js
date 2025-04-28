@@ -64,6 +64,7 @@ export const deleteCart = (cart_id) => async (dispatch) => {
   export const checkout = (cartItems, restaurantId, totalPrice) => async (dispatch) => {
     try {
       dispatch({ type: CHECKOUT_REQUEST });
+      console.log('Checkout request:', cartItems, restaurantId, totalPrice);
       const { data } = await axios.post(`${ORDER_SERVICE_URL}/api/cart/checkout`, {cartItems,restaurantId, totalPrice}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
     });
